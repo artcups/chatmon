@@ -1,0 +1,26 @@
+{
+  "name": "chatmon",
+  "version": "1.0.0",
+  "description": "chatmon",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/artcups/chatmon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/artcups/chatmon/issues"
+  },
+  "homepage": "https://github.com/artcups/chatmon#readme",
+  "devDependencies": {
+    "socket.io": "^1.4.8"
+  },
+  "dependencies": {
+    "axios": "^0.13.1",
+    "express": "^4.14.0"
+  }
+}
