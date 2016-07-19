@@ -10,7 +10,6 @@ import { sendMessage } from "../actions/messagesActions"
 	};
 })
 export default class Login extends React.Component {
-
 	render() {
 		return <div>LOGIN</div>
 	}

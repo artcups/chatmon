@@ -4,7 +4,7 @@
   "description": "Client",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --content-base www --inline --hot",
+    "dev": "webpack-dev-server --content-base www --inline --hot --port 8081",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prod": "set NODE_ENV=production && webpack"
   },
