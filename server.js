@@ -11,8 +11,7 @@ server.listen(port, function () {
 	console.log('Server listening at port %d', port);
 	setInterval(() => {
 		io.emit("action", {type:"HEARTBEAT", data: "This is a heartbeat!"})
-	}, 10000);
-
+	}, 30000);
 });
 
 io.on('connection', function (socket) {
@@ -23,6 +22,10 @@ io.on('connection', function (socket) {
 		case "server/SEND_MESSAGE":
 			console.log("SEND_MESSAGE")
 			io.emit("action", {type:"RECEIVE_MESSAGE", data: "This is a message!"})
+			break;
+		case "server/AUTHENTICATE_USER":
+			authConnection(socket, io, action.data)
+			console.log("AUTHENTICATE_USER")
 			break;
 		default:
 			console.log("Nothing there")
@@ -50,17 +53,20 @@ io.on('connection', function (socket) {
 	});
   });
   socket.on('authConnection', function (data) {
-	console.log('Auth req from: ' + data.username + ' with token ' + data.token);
-	checkAuth(data.token, function(res){
-	  if (!res)
-		return;
-	  io.emit('chatMessage', {
-		message: res.email + ' connected to the server, lets welcome him!',
-		username: 'server'
-	  });
-	});
+
   });
 });
+
+function authConnection(io, socket, data){
+	console.log('Auth req from: ' + data.email + ' with token ' + data.token);
+	checkAuth(data.token, function(user){
+		console.log(user)
+		if (!user)
+			return;
+		io.emit("action", {type: "NEW_MESSAGE", data: {text: user.name + ' connected to the server, lets welcome him!'}});
+		socket.emit("action", {type: "SET_USER", data: user});
+	});
+}
 
 function checkAuth(token, callback){
   var url = 'https://www.googleapis.com/oauth2/v3/tokeninfo';
@@ -72,7 +78,10 @@ function checkAuth(token, callback){
  .then(function (response) {
    console.log(response);
 	//if (response.email exist in db) auth OK else create user?
-	callback(response.data);
+	callback({
+		id:  new Date().getTime(),
+		name: response.data.name
+	});
  })
  .catch(function (error) {
    console.log(error);

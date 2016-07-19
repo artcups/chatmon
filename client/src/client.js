@@ -1,33 +1,25 @@
-import React from "react"
-import ReactDOM from "react-dom"
-import { Provider } from "react-redux"
-import { Router, Route, hashHistory, IndexRedirect } from 'react-router'
-import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
+import React from 'react'
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+import { Router, hashHistory, useRouterHistory } from 'react-router'
+import { syncHistoryWithStore } from 'react-router-redux'
+import createBrowserHistory from 'history/lib/createHashHistory'
 
-//The smart components
-import Layout from "./components/Layout"
-import Messages from "./components/Messages"
-import Login from "./components/Login"
+import { configureStore } from "./store"
+import routes from "./routes"
 
-import store from "./store"
-const app = document.getElementById('app')
-const history = syncHistoryWithStore(hashHistory, store)
+let state = window.__initialState__ || undefined;
+const store = configureStore(hashHistory, state);
+const appHistory = useRouterHistory(createBrowserHistory)();
+const history = syncHistoryWithStore(appHistory, store);
 
-function requireAuth(store) {
-	return (nextState, replace) => {
-	let { user } = store.getState().user;
-	if (user.id === null)
-		replace({ pathname: "/login", query: { return_to: nextState.location.pathname } });
-	};
-}
+const app = document.getElementById('app');
 
-ReactDOM.render(<Provider store={store}>
-	{ /* Tell the Router to use our enhanced history */ }
-	<Router history={history}>
-	  <Route path="/" component={Layout}>
-	  	<IndexRedirect to="messages" />
-		<Route path="messages" component={Messages} onEnter={requireAuth(store)}/>
-		<Route path="login" component={Login}/>
-	  </Route>
-	</Router>
-</Provider>, app);
+
+
+render(
+	<Provider store={store}>
+		<Router history={history} routes={routes} />
+	</Provider>,
+	app
+)

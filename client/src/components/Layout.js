@@ -11,7 +11,6 @@ export default function Layout({ children }) {
 				<Link to="/login">Login</Link>
 			</header>
 	  	<div>
-		<button onClick={() => hashHistory.push('/login')}>Login</button>
 	  </div>
 	  <div >{children}</div>
 	</div>

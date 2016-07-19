@@ -1,18 +1,33 @@
-import { applyMiddleware, createStore } from "redux"
-
+import {  createStore, combineReducers, compose, applyMiddleware } from "redux"
 import logger from "redux-logger"
-import thunk from "redux-thunk"
+import thunkMiddleware from "redux-thunk"
+import { routerReducer, routerMiddleware } from 'react-router-redux'
 import promise from "redux-promise-middleware"
 
-//The socet fot the application
+import reducer from "./reducers"
+import { reduxReactRouter, routerStateReducer, ReduxRouter } from 'redux-router';
+
 import createSocketIoMiddleware from 'redux-socket.io';
 import io from 'socket.io-client';
-let socket = io('http://localhost:3000');
 
-let socketIoMiddleware = createSocketIoMiddleware(socket, "server/");
+export function configureStore(history, initialState) {
+    let socket = io('http://localhost:3000');
+    let socketIoMiddleware = createSocketIoMiddleware(socket, "server/");
+    
 
-import reducer from "./reducers"
+    const store = createStore(
+        reducer,
+        initialState,
+        compose(
+            applyMiddleware(
+                socketIoMiddleware,
+                thunkMiddleware,
+                promise(),
+                routerMiddleware(history),
+                logger()
+            )
+        )
+    )
 
-const middleware = applyMiddleware(socketIoMiddleware, promise(), thunk, logger())
-
-export default createStore(reducer, middleware)
+    return store;
+}

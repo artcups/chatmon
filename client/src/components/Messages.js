@@ -15,10 +15,6 @@ export default class Messages extends React.Component {
 		debugger;
 		this.props.dispatch(sendMessage())
 	}
-	sendToLogin(){
-
-		this.props.dispatch(push('/foo'))
-	}
 
 	render() {
 		debugger;
