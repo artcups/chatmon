@@ -19,7 +19,6 @@ function requireAuth(store) {
 	if (user.id === null)
 		replace({ pathname: "/login", query: { return_to: nextState.location.pathname } });
 	};
-  
 }
 
 ReactDOM.render(<Provider store={store}>
