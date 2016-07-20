@@ -8,5 +8,8 @@ export default {
 	},
 	message: {
 		RECEIVE_MESSAGE: "RECEIVE_MESSAGE"
+	},
+	application: {
+		SET_SIDEMENU: "SET_SIDEMENU"
 	}
 }

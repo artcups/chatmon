@@ -3,6 +3,7 @@ import { connect } from "react-redux"
 import { Router, Route, Link, hashHistory } from 'react-router'
 import { push } from 'react-router-redux'
 import { sendMessage } from "../actions/messagesActions"
+import { setSidemenuState } from "../actions/applicationActions"
 import {
 	Page,
 	Button,
@@ -12,9 +13,13 @@ import {
 	ToolbarButton,
 	Row,
 	ListItem,
-	LazyList
+	LazyList,
+	Splitter,
+	SplitterSide,
+	SplitterContent,
 } from 'react-onsenui';
 import Navbar from "./../components/Navbar";
+import Sidemenu from "./../components/Sidemenu";
 
 // load Onsen UI library
 import ons from 'onsenui';
@@ -22,7 +27,8 @@ import ons from 'onsenui';
 @connect((store) => {
 	return {
 		messages: store.messages.messages,
-		location: store.location
+		location: store.location,
+		application: store.application
 	};
 })
 export default class Messages extends React.Component {
@@ -37,21 +43,44 @@ export default class Messages extends React.Component {
 			</ListItem>
 		);
 	}
+	toggleSideMenu() {
+		if(this.props.application.sideMenuIsOpen)
+			this.props.dispatch(setSidemenuState(false))
+		else
+			this.props.dispatch(setSidemenuState(true))
+	}
+	hide() {
+		this.props.dispatch(setSidemenuState(false))
+	}
 
 	render() {
 
 		const { messages } = this.props;
 		//const mappedMessages = messages.map(messages => <li>{messages}</li>)
-		return <Page class="page"
-					 renderToolbar={() =>
-				<Navbar headerText="Messages"/>
-             }>
-			<Button onClick={ this.sendMessage.bind(this) }>New messages!</Button>
-			<LazyList
-				length={messages.length}
-				renderRow={this.renderRow.bind(this)}
-				calculateItemHeight={() => ons.platform.isAndroid() ? 48 : 44}
-			/>
-		</Page>
+		return	<Splitter>
+					<SplitterSide
+						side='left'
+						collapse={true}
+						isOpen={this.props.application.sideMenuIsOpen}
+						onClose={this.hide.bind(this)}
+						isSwipeable={true}>
+						<Page>
+							Menu content
+						</Page>
+					</SplitterSide>
+					<SplitterContent>
+							<Page class="page"
+								  renderToolbar={() =>
+								<Navbar toggleSideMenu={this.toggleSideMenu.bind(this)} headerText="Messages"/>
+							 }>
+							<Button onClick={ this.sendMessage.bind(this) }>New messages!</Button>
+							<LazyList
+								length={messages.length}
+								renderRow={this.renderRow.bind(this)}
+								calculateItemHeight={() => ons.platform.isAndroid() ? 48 : 44}
+							/>
+						</Page>
+					</SplitterContent>
+				</Splitter>
 	}
 }

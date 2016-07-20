@@ -1,14 +1,15 @@
 import types from "../actions/types"
 
 export default function reducer(state={
-	Sidemenu: {isOpen: false}
+	sideMenuIsOpen: false
 }, action) {
 
 	switch (action.type) {
-		case types.message.RECEIVE_MESSAGE: {
+		case types.application.SET_SIDEMENU: {
 			console.log(action.data);
-			return { ...state, messages: [...state.messages, action.data]}
+			return { ...state, sideMenuIsOpen: action.data}
 		}
+
 	}
 
 	return state
