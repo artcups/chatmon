@@ -10,8 +10,11 @@ import {
 	Icon,
 	Input,
 	ToolbarButton,
-	Row
+	Row,
+	ListItem,
+	LazyList
 } from 'react-onsenui';
+import Navbar from "./../components/Navbar";
 
 // load Onsen UI library
 import ons from 'onsenui';
@@ -24,19 +27,31 @@ import ons from 'onsenui';
 })
 export default class Messages extends React.Component {
 	sendMessage(){
-		debugger;
 		this.props.dispatch(sendMessage())
 	}
 
-	render() {
-		debugger;
-		const { messages } = this.props;
-		
-		const mappedMessages = messages.map(messages => <li>{messages}</li>)
+	renderRow(idx) {
+		return (
+			<ListItem key={idx}>
+				{this.props.messages[idx]}
+			</ListItem>
+		);
+	}
 
-		return <div>
-			<Button onClick={this.sendMessage.bind(this)}>Click on me!</Button>
-			<ul>{mappedMessages}</ul>
-		</div>
+	render() {
+
+		const { messages } = this.props;
+		//const mappedMessages = messages.map(messages => <li>{messages}</li>)
+		return <Page class="page"
+					 renderToolbar={() =>
+				<Navbar headerText="Messages"/>
+             }>
+			<Button onClick={ this.sendMessage.bind(this) }>New messages!</Button>
+			<LazyList
+				length={messages.length}
+				renderRow={this.renderRow.bind(this)}
+				calculateItemHeight={() => ons.platform.isAndroid() ? 48 : 44}
+			/>
+		</Page>
 	}
 }

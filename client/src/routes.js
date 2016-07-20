@@ -2,9 +2,9 @@ import React from 'react'
 import { Route, IndexRoute, Link } from 'react-router'
 
 //The smart components
-import Layout from "./components/Layout"
-import Messages from "./components/Messages"
-import Login from "./components/Login"
+import Layout from "./layouts/Layout"
+import Messages from "./layouts/Messages"
+import Login from "./layouts/Login"
 import {RequireAuthentication} from "./components/RequireAuthentication"
 
 function requireAuth() {

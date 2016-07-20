@@ -26,7 +26,6 @@ export function setUserAge(age) {
 }
 
 export function authenticateUser({token, email}){
-  debugger;
   return {
     type: types.server.AUTHENTICATE_USER,
     data: {token, email}

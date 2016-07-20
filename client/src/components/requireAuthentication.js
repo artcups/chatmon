@@ -12,12 +12,10 @@ export function RequireAuthentication(Component) {
         }
 
         componentWillReceiveProps (nextProps, nextState) {
-            debugger;
             this.checkAuth(nextProps.user);
         }
 
         checkAuth (user) {
-            debugger;
             if (user.id === null) {
                 let redirectAfterLogin = this.props.location.pathname;
                 this.props.dispatch(push(`/login?next=${redirectAfterLogin}`))
