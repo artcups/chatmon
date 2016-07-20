@@ -5,7 +5,18 @@ var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 var https = require('https');
 var axios = require('axios');
+var config = require('./config').config;
+var DataLayer = require('./dl');
+var fs = require('fs');
 //Test
+
+/*
+fs.readdirSync(__dirname + '/models').forEach(function(filename) {
+ if (~filename.indexOf('.js')) require(__dirname + '/models/' + filename)
+});
+*/
+var _dl = new DataLayer();
+_dl.getAllUsers();
 
 server.listen(port, function () {
 	console.log('Server listening at port %d', port);
@@ -76,8 +87,19 @@ function checkAuth(token, callback){
    }
  })
  .then(function (response) {
-   console.log(response);
-	//if (response.email exist in db) auth OK else create user?
+   	console.log(response);
+		if (response.aud == config.server.google.aud){
+			//if (response.email exist in db) auth OK else create user?
+			_dl.getUser(response.email, function(user){
+				if (!user){
+					//User doesn't exist - create?
+				}
+				else
+				{
+					
+				}
+			});
+		}
 	callback({
 		id:  new Date().getTime(),
 		name: response.data.name
