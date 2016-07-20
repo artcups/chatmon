@@ -1,3 +1,5 @@
+require("./content/css/onsenui.css");
+require("./content/css/onsen-css-components.css");
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'

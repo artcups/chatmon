@@ -1,5 +1,7 @@
 var debug = process.env.NODE_ENV !== "production";
 var webpack = require('webpack');
+var precss = require('precss');
+var autoprefixer = require('autoprefixer');
 var path = require('path');
 
 module.exports = {
@@ -8,6 +10,14 @@ module.exports = {
   entry: "./client.js",
   module: {
     loaders: [
+      {
+        test: /\.css$/,
+        exclude: /vendor/,
+        loader: "style!css!postcss"
+      },
+      {
+        test: /\.(png|woff|woff2|eot|ttf|svg|jpg)$/,
+        loader: 'url?limit=10000&name=assets/[name].[ext]' },
       {
         test:  /(\.jsx|\.js)$/,
         exclude: /(node_modules|bower_components)/,
@@ -28,4 +38,7 @@ module.exports = {
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false }),
   ],
+  postcss: function () {
+    return [autoprefixer];
+  }
 };
