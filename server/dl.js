@@ -18,14 +18,14 @@ var DataLayer = (function () {
   
   function initSchemas(){
     _userSchema = new mongoose.Schema({
-      id: String,
-      name: String
+			email: String,
+			userName: String
     });
     User = mongoose.model('user', _userSchema);
   }
   
-  function getUser(id, callback){
-    User.find({id: id}, function(user){
+  function getUser(email, callback){
+    User.findOne({email: email}).exec(function(err, user){
       callback(user);
     });
   };
@@ -36,11 +36,14 @@ var DataLayer = (function () {
     });
   }
   
-  function addUser(name, id, callback){
-    var newUser = new User({id: id, name: name});
-    newUser.save(function(err, user){
+  function addUser(email, username, callback){
+		console.log(email, username);
+    var newUser = {email: email, userName: username};
+    User.create(newUser, function(err, user){
       if (err)
         return console.error(err);
+			console.log(user);
+			callback(user);
     });
   }
   

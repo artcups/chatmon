@@ -38,9 +38,9 @@ class Login extends React.Component {
 			margin: '0 auto 0'
 		};
 		return <Page id="login"
-					 renderToolbar={() =>
+					 /*renderToolbar={() =>
              	<Navbar headerText="Login" />
-             } >
+             }*/ >
 
 			<div style={divStyle}>
 				<img id='logo' src={require('./../content/img/logo_react.png')} />
