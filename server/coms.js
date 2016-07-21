@@ -26,8 +26,8 @@ var CommunicationLayer = (function () {
 			socket.on('action', (action) => {
 			switch(action.type) {
 				case "server/SEND_MESSAGE":
-					console.log("SEND_MESSAGE")
-					io.emit("action", {type:"RECEIVE_MESSAGE", data: "This is a message!"})
+					console.log("SEND_MESSAGE ", action.data);
+					io.emit("action", {type:"RECEIVE_MESSAGE", data: action.data})
 					break;
 				case "server/AUTHENTICATE_USER":
 					_auth.authUserConnection(action.data, function(userExists, res){
@@ -48,12 +48,13 @@ var CommunicationLayer = (function () {
 					_auth.authUserConnection(action.data, function(userExists, res){
 						if (userExists){
 							//User already exist
+							res.userNameOk = false;
 							socket.emit("action", {type: "USER_ALREADY_EXIST", data: res});
 						}
 						else{
-							_dl.addUser(res.email, res.userName, function(res){
-								socket.emit("action", {type: "SET_USER", data: res});
-								console.log('User ' + res.userName + '(' + res.email + ') created');
+							_dl.addUser(res.email, res.userName, res.team).then(function(user){
+								socket.emit("action", {type: "SET_USER", data: user});
+								console.log('User ' + user.userName + '(' + user.email + ') created');
 							})
 						}
 					});

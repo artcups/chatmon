@@ -19,7 +19,8 @@ var DataLayer = (function () {
   function initSchemas(){
     _userSchema = new mongoose.Schema({
 			email: String,
-			userName: String
+			userName: String,
+			team: Number
     });
     User = mongoose.model('user', _userSchema);
   }
@@ -36,16 +37,27 @@ var DataLayer = (function () {
     });
   }
   
-  function addUser(email, username, callback){
-		console.log(email, username);
-    var newUser = {email: email, userName: username};
+  function addUser(email, username, team){
+		var promise = new Promise((function(resolve, reject){
+				var newUser = {email: email, userName: username, team: team};
+				User.create(newUser, function(err, user){
+					if (err)
+						return console.error(err);
+					console.log(user);
+					resolve(user);
+				});
+			}).bind(this)); 
+		return promise;
+	}
+		/*console.log(email, username, team);
+    var newUser = {email: email, userName: username, team: team};
     User.create(newUser, function(err, user){
       if (err)
         return console.error(err);
 			console.log(user);
 			callback(user);
     });
-  }
+  }*/
   
   DataLayer.prototype = {
     getAllUsers: function (callback) {
@@ -54,8 +66,8 @@ var DataLayer = (function () {
     getUser: function(id, callback) {
       getUser(id, callback);
     },
-    addUser: function(name, id, callback){
-      addUser(name, id, callback);
+    addUser: function(name, email, team){
+      return addUser(name, email, team);
     }
   }
   return DataLayer;
