@@ -18,14 +18,15 @@ var DataLayer = (function () {
   
   function initSchemas(){
     _userSchema = new mongoose.Schema({
-      id: String,
-      name: String
+			email: String,
+			userName: String,
+			team: Number
     });
     User = mongoose.model('user', _userSchema);
   }
   
-  function getUser(id, callback){
-    User.find({id: id}, function(user){
+  function getUser(email, callback){
+    User.findOne({email: email}).exec(function(err, user){
       callback(user);
     });
   };
@@ -36,13 +37,27 @@ var DataLayer = (function () {
     });
   }
   
-  function addUser(name, id, callback){
-    var newUser = new User({id: id, name: name});
-    newUser.save(function(err, user){
+  function addUser(email, username, team){
+		var promise = new Promise((function(resolve, reject){
+				var newUser = {email: email, userName: username, team: team};
+				User.create(newUser, function(err, user){
+					if (err)
+						return console.error(err);
+					console.log(user);
+					resolve(user);
+				});
+			}).bind(this)); 
+		return promise;
+	}
+		/*console.log(email, username, team);
+    var newUser = {email: email, userName: username, team: team};
+    User.create(newUser, function(err, user){
       if (err)
         return console.error(err);
+			console.log(user);
+			callback(user);
     });
-  }
+  }*/
   
   DataLayer.prototype = {
     getAllUsers: function (callback) {
@@ -51,8 +66,8 @@ var DataLayer = (function () {
     getUser: function(id, callback) {
       getUser(id, callback);
     },
-    addUser: function(name, id, callback){
-      addUser(name, id, callback);
+    addUser: function(name, email, team){
+      return addUser(name, email, team);
     }
   }
   return DataLayer;
