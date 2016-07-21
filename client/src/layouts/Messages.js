@@ -12,17 +12,17 @@ import {
 	Input,
 	ToolbarButton,
 	Row,
+	List,
 	ListItem,
 	LazyList,
 	Splitter,
 	SplitterSide,
 	SplitterContent,
 } from 'react-onsenui';
-import Navbar from "./../components/Navbar";
-import Sidemenu from "./../components/Sidemenu";
-
-// load Onsen UI library
 import ons from 'onsenui';
+import Navbar from "./../components/Navbar";
+
+
 
 @connect((store) => {
 	return {
@@ -65,7 +65,12 @@ export default class Messages extends React.Component {
 						onClose={this.hide.bind(this)}
 						isSwipeable={true}>
 						<Page>
-							Menu content
+							<List
+								dataSource={['Profile', 'Followers', 'Settings']}
+								renderRow={(title) => (
+								<ListItem key={title} onClick={this.hide.bind(this)} tappable>{title}</ListItem>
+							  )}
+							/>
 						</Page>
 					</SplitterSide>
 					<SplitterContent>
