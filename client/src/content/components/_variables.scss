@@ -1,0 +1,20 @@
+$primary-gray: #DDD;
+$primary-gray-shadow: #a3abb4;
+$light-gray: #ebecef;
+$lighter-gray: #E6E6E6;
+$dark-gray: #828b94;
+$darker-grey: #454e56;
+$orange: #e7803b;
+$blue: #2b82ad;
+$blue-light: #6da5d6;
+$white: #FFFFFF;
+
+$green: #45bdab;
+$green-darker: #36a896;
+
+@mixin border-radius($radius) {
+	-webkit-border-radius: $radius;
+	-moz-border-radius: $radius;
+	-ms-border-radius: $radius;
+	border-radius: $radius;
+}

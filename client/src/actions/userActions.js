@@ -11,17 +11,10 @@ export function fetchUser() {
   }
 }
 
-export function setUserName(name) {
+export function createUser(token, email, userName, team) {
   return {
-    type: 'SET_USER_NAME',
-    payload: name,
-  }
-}
-
-export function setUserAge(age) {
-  return {
-    type: 'SET_USER_AGE',
-    payload: age,
+    type: types.server.CREATE_USER,
+    data: { token, email, userName, team },
   }
 }
 
@@ -29,5 +22,12 @@ export function authenticateUser({token, email}){
   return {
     type: types.server.AUTHENTICATE_USER,
     data: {token, email}
+  }
+}
+
+export function updateNewUserNameValue(value) {
+  return {
+    type: types.user.UPDATE_NEW_USERNAME_VALUE,
+    data: value
   }
 }

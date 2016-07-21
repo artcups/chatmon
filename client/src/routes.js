@@ -3,8 +3,9 @@ import { Route, IndexRoute, Link } from 'react-router'
 
 //The smart components
 import Layout from "./layouts/Layout"
-import Messages from "./layouts/Messages"
+import Messages from "./layouts/Chat"
 import Login from "./layouts/Login"
+import NewUser from "./layouts/NewUser"
 import {RequireAuthentication} from "./components/RequireAuthentication"
 
 function requireAuth() {
@@ -21,6 +22,7 @@ const routes = (
         <IndexRoute component={RequireAuthentication(Messages)} />
         <Route path="/messages" component={RequireAuthentication(Messages)} />
         <Route path="/login" component={Login}/>
+        <Route path="/newUser" component={NewUser}/>
     </Route>
 )
 

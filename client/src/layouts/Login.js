@@ -24,34 +24,31 @@ class Login extends React.Component {
 
 	componentWillUpdate(nextProps, nextState){
 		console.log(Router.state)
-		if(nextProps.user != undefined && nextProps.user.id !== null){
+		if(nextProps.user.user != undefined && nextProps.user.user.id !== ""){
 			this.props.dispatch(push(nextProps.routing.query.next))
+		}else if(nextProps.user.newUser.createNewUser && nextProps.user.newUser.authEmail != ""){
+			const newRedirect = nextProps.routing.query.next;
+			this.props.dispatch(push(`/newUser?next=${newRedirect}`));
 		}
-
 	}
 
 
 	render() {
 		var divStyle = {
 			width: '80%',
-			"text-align": 'center',
+			"textAlign": 'center',
 			margin: '0 auto 0'
 		};
 		return <Page id="login"
-					 renderToolbar={() =>
+					 /*renderToolbar={() =>
              	<Navbar headerText="Login" />
-             } >
+             } */>
 
 			<div style={divStyle}>
 				<img id='logo' src={require('./../content/img/logo_react.png')} />
 				<div id='logoTitle'>
 					<img src={require('./../content/img/logo_title.png')} />
 				</div>
-
-				<Input value="" placeholder="Email" type="text" modifier="underbar" float />
-				<Input value="" placeholder="Password" type="password" modifier="underbar" float />
-				<Button id='signIn'>Sign In</Button>
-				<Button id='forgetBtn' modifier="quiet">FORGOT PASSWORD?</Button>
 
 				<GoogleLogin
 					clientId="1012200602922-lb4cd19omjm7ku7jijef0dvf7pnhgdff.apps.googleusercontent.com"
@@ -66,7 +63,7 @@ class Login extends React.Component {
 var mapStateToProps = function(state){
 	// This component will have access to `state.battlefield` through `this.props.battle`
 	return {
-		user: state.user.user,
+		user: state.user,
 		routing: state.routing.locationBeforeTransitions
 	};
 };

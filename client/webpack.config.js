@@ -12,8 +12,12 @@ module.exports = {
     loaders: [
       {
         test: /\.css$/,
-        exclude: /vendor/,
         loader: "style!css!postcss"
+      },
+      {
+        test: /\.scss$/,
+        exclude: /vendor/,
+        loader: "style!css!postcss!sass"
       },
       {
         test: /\.(png|woff|woff2|eot|ttf|svg|jpg)$/,

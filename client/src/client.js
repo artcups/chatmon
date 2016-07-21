@@ -1,5 +1,6 @@
 require("./content/css/onsenui.css");
 require("./content/css/onsen-css-components.css");
+require("./content/main.scss");
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
@@ -16,8 +17,6 @@ const appHistory = useRouterHistory(createBrowserHistory)();
 const history = syncHistoryWithStore(appHistory, store);
 
 const app = document.getElementById('app');
-
-
 
 render(
 	<Provider store={store}>

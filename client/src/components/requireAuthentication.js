@@ -16,7 +16,7 @@ export function RequireAuthentication(Component) {
         }
 
         checkAuth (user) {
-            if (user.id === null) {
+            if (user.id === "") {
                 let redirectAfterLogin = this.props.location.pathname;
                 this.props.dispatch(push(`/login?next=${redirectAfterLogin}`))
             }
@@ -31,14 +31,12 @@ export function RequireAuthentication(Component) {
                     }
                 </div>
             )
-
         }
     }
 
     const mapStateToProps = (state) => ({
         user: state.user.user
     });
-
     return connect(mapStateToProps)(AuthenticatedComponent);
 
 }
