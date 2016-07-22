@@ -6,7 +6,6 @@ export default function reducer(state={
 
 	switch (action.type) {
 		case types.application.SET_SIDEMENU: {
-			console.log(action.data);
 			return { ...state, sideMenuIsOpen: action.data}
 		}
 

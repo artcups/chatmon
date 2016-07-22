@@ -6,3 +6,12 @@ export function sendMessage(message){
 export function updateNewMessageValue(text){
 	return { type: types.message.UPDATE_NEW_MESSAGE_VALUE, data: text}
 }
+export function latestMessages(dest){
+	return { type: types.server.GET_MESSAGES, data: dest}
+}
+export function updateDest(dest) {
+	return {
+		type: types.message.UPDATE_DEST,
+		data: dest
+	}
+}

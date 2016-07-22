@@ -15,11 +15,10 @@ import ons from 'onsenui';
 import Navbar from "./../components/Navbar";
 
 class NewUser extends React.Component {
-	createUser(){
-		this.props.dispatch(createUser(this.props.user.newUser.token, this.props.user.newUser.authEmail, "Artcups", 1));
-	}
+
 
 	componentWillUpdate(nextProps, nextState){
+		debugger;
 		if(nextProps.user.user != undefined && nextProps.user.user.userName !== ""){
 			if(nextProps.routing = "")
 				this.props.dispatch(push("/"));
@@ -56,7 +55,7 @@ class NewUser extends React.Component {
 				{this.showUserNameLabel(this.props.user.userNameOk)}
 				<Input value={userName} onChange={ this.props.onValueChange.bind(this) }placeholder="Username" type="text" modifier="underbar" float />
 
-				<Button onClick={this.createUser.bind(this)}>Sign In</Button>
+				<Button onClick={this.props.createUser.bind(this)}>Sign In</Button>
 			</div>
 
 
@@ -72,9 +71,10 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) =>({
-
 	onValueChange: (e) => {
 		dispatch(updateNewUserNameValue(e.target.value))
+	},createUser: function(){
+		dispatch(createUser(this.props.user.newUser.token, this.props.user.newUser.authEmail, this.props.user.newUser.newUserName, 1));
 	}
 
 });

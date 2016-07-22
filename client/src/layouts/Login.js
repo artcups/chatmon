@@ -23,7 +23,7 @@ class Login extends React.Component {
 	}
 
 	componentWillUpdate(nextProps, nextState){
-		console.log(Router.state)
+		debugger;
 		if(nextProps.user.user != undefined && nextProps.user.user.id !== ""){
 			this.props.dispatch(push(nextProps.routing.query.next))
 		}else if(nextProps.user.newUser.createNewUser && nextProps.user.newUser.authEmail != ""){
@@ -43,17 +43,17 @@ class Login extends React.Component {
 					 /*renderToolbar={() =>
              	<Navbar headerText="Login" /> }*/ >
 
-			<div style={divStyle}>
-				<img id='logo' src={require('./../content/img/logo_react.png')} />
-				<div id='logoTitle'>
-					<img src={require('./../content/img/logo_title.png')} />
-				</div>
+				<div style={divStyle}>
+					<img id='logo' src={require('./../content/img/logo_react.png')} />
+					<div id='logoTitle'>
+						<img src={require('./../content/img/logo_title.png')} />
+					</div>
 
-				<GoogleLogin
-					clientId="1012200602922-lb4cd19omjm7ku7jijef0dvf7pnhgdff.apps.googleusercontent.com"
-					buttonText="Login"
-					callback={this.responseGoogle.bind(this)} />
-			</div>
+					<GoogleLogin
+						clientId="1012200602922-lb4cd19omjm7ku7jijef0dvf7pnhgdff.apps.googleusercontent.com"
+						buttonText="Login"
+						callback={this.responseGoogle.bind(this)} />
+				</div>
 
 
 			</Page>

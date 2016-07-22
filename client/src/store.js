@@ -11,7 +11,7 @@ import createSocketIoMiddleware from 'redux-socket.io';
 import io from 'socket.io-client';
 
 export function configureStore(history, initialState) {
-    let socket = io('http://localhost:3000');
+    let socket = io('http://162.243.162.123:3000');
     let socketIoMiddleware = createSocketIoMiddleware(socket, "server/");
     
 
@@ -20,10 +20,11 @@ export function configureStore(history, initialState) {
         initialState,
         compose(
             applyMiddleware(
-                socketIoMiddleware,
+
                 thunkMiddleware,
                 promise(),
                 routerMiddleware(history),
+                socketIoMiddleware,
                 logger()
             )
         )

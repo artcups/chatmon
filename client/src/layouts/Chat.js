@@ -3,7 +3,8 @@ import ReactDOM from "react-dom"
 import { connect } from "react-redux"
 import { Router, Route, Link, hashHistory } from 'react-router'
 import { push } from 'react-router-redux'
-import { updateNewMessageValue, sendMessage } from "../actions/messagesActions"
+import { updateNewMessageValue, sendMessage, latestMessages, updateDest } from "../actions/messagesActions"
+import { addSubscription } from "../actions/subscriptionsActions"
 import { setSidemenuState } from "../actions/applicationActions"
 import {
 	Page,
@@ -32,10 +33,19 @@ export default class Messages extends React.Component {
 		this.state = { messageText: ""}
 	}
 	sendMessage(){
-		this.props.dispatch(sendMessage({text: this.props.messages.latestMessage.text, sender: this.props.user, _id: new Date().getTime() }));
+		debugger;
+		this.props.dispatch(sendMessage({content: this.props.messages.latestMessage.content, source: this.props.user, coord: "55.6078469,12.9859076", dest: this.props.messages.latestMessage.dest }));
+		this.props.dispatch(updateNewMessageValue(""));
+	}
+	addSubscription(){
+		this.props.dispatch(addSubscription(this.props.messages.latestMessage.content));
 		this.props.dispatch(updateNewMessageValue(""));
 	}
 
+	toogleDest(subscription){
+		this.props.dispatch(updateDest(subscription));
+		this.props.dispatch(latestMessages(subscription));
+	}
 
 	toggleSideMenu() {
 		if(this.props.application.sideMenuIsOpen)
@@ -49,7 +59,7 @@ export default class Messages extends React.Component {
 
 	render() {
 
-		const { messages, onValueChange } = this.props;
+		const { user, messages, onValueChange } = this.props;
 		const { latestMessage } = messages;
 		debugger;
 
@@ -60,20 +70,21 @@ export default class Messages extends React.Component {
 									onClose={this.hide.bind(this)}
 									isSwipeable={true}>
 						<Page>
-							<List 	dataSource={['Profile', 'Followers', 'Settings']}
-									renderRow={(title) => ( <ListItem key={title} onClick={this.hide.bind(this)} tappable>{title}</ListItem> )} />
+							<List 	dataSource={user.subscriptions}
+									renderRow={(subscription) => ( <ListItem key={subscription._id} onClick={() => this.toogleDest(subscription)} tappable>{subscription.name}</ListItem> )} />
 						</Page>
 					</SplitterSide>
 					<SplitterContent>
 						<Page class="page" renderToolbar={() => <Navbar toggleSideMenu={this.toggleSideMenu.bind(this)} headerText="Messages"/> }>
 							<Button ripple onClick={ this.sendMessage.bind(this) }>New messages!</Button>
+							<Button ripple onClick={ this.addSubscription.bind(this) }>Lägg till ny kanal!</Button>
 
 							<FilteredMessageList onValueChange={onValueChange} messages={messages.messages} />
 
 
 
 							<div>
-								<Input	value={latestMessage.text}
+								<Input	value={latestMessage.content}
 										onChange={ this.props.onValueChange.bind(this) } />
 							</div>
 						</Page>
