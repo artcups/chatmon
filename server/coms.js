@@ -5,11 +5,12 @@ var express = require('express'),
 		port = process.env.PORT || 3000;
 
 var CommunicationLayer = (function () {
-	var _auth, _dl;
+	var _auth, _dl, _sockets;
 	
 	function CommunicationLayer(auth, dl){
 		_auth = auth;
 		_dl = dl;
+		_sockets = [];
 		initServer();
 	}
 	function initServer() {
@@ -21,26 +22,32 @@ var CommunicationLayer = (function () {
 		});
 		
 		io.on('connection', function (socket) {
-			console.log('New connection from ' + socket.handshake.address);
-			_dl.getAllUsers();
+			console.log('CONNECTION FROM ' + socket.handshake.address);
 			socket.on('action', (action) => {
 			switch(action.type) {
 				case "server/SEND_MESSAGE":
-					console.log("SEND_MESSAGE ", action.data);
-					io.emit("action", {type:"RECEIVE_MESSAGE", data: action.data})
+					if (!socket.user)
+					{
+						console.log("Unauthed socket tried to send msg", action.data);
+						socket.emit("action", {type: "NOT_AUTH", data: action.data});
+						return;
+					}
+					console.log("SEND_MESSAGE FROM " + socket.user.userName);
+					_dl.addMessage(socket.user, action.data.dest, action.data.content, action.data.coord).then(function(message){
+						broadCast(message);
+					});
 					break;
 				case "server/AUTHENTICATE_USER":
 					_auth.authUserConnection(action.data, function(userExists, res){
 						if (userExists){
-							//Auth OK, send new message
 							socket.user = res;
-							io.emit("action", {type: "NEW_MESSAGE", data: {text: res.name + ' connected to the server, lets welcome him!'}});
+							_sockets.push(socket);
 							socket.emit("action", {type: "SET_USER", data: res});
+							console.log("USER " + res.userName + " LOGGED IN.");
 						}
 						else{
 							socket.emit("action", {type: "CREATE_NEW_USER", data: {createNewUser: true}});
-							console.log('Auth NOK, user not found, sent CREATE_NEW_USER');
-							//Auth NOK, tell user
+							console.log('User not found, sent CREATE_NEW_USER');
 						}
 					});
 					break;
@@ -53,42 +60,52 @@ var CommunicationLayer = (function () {
 						}
 						else{
 							_dl.addUser(res.email, res.userName, res.team).then(function(user){
+								socket.user = user;
+								_sockets.push(socket);
 								socket.emit("action", {type: "SET_USER", data: user});
 								console.log('User ' + user.userName + '(' + user.email + ') created');
 							})
 						}
 					});
 					break;
+				case "server/GET_MESSAGES":
+					_dl.getMessages(action.data, function(messages){
+						socket.emit("action", {type: "LATEST_MESSAGES", data: messages})
+					})
+					break;
+				case "server/ADD_SUBSCRIPTION":
+					if (!socket.user)
+						return;
+					_dl.addSubscription(action.data.name, action.data.key).then(function(subscription){
+						socket.user.subscriptions.push(subscription);
+						socket.user.save();
+						socket.emit("action", {type: "SET_USER", data: socket.user})
+					});
+					break;
 				default:
-					console.log("Nothing there")
-			}
-
-			if(action.type === 'server/hello'){
-				console.log('Got hello data!', action.data);
-				socket.emit('action', {type:'message', data:'good day!'});
-			}
-			});
-
-			socket.emit('chatMessage', {
-			message: 'Welcome ' + socket.handshake.address,
-			username: 'server'
-			});
-			var addedUser = false;
-
-			// when the client emits 'new message', this listens and executes
-			socket.on('chatMessage', function (data) {
-			// we tell the client to execute 'new message'
-			console.log(data.message);
-			io.emit('chatMessage', {
-				message: data.message,
-				username: 'server'
-			});
-			});
-			socket.on('authConnection', function (data) {
-
+					{
+						console.log("Nothing there")
+						break;
+					}
+				}
 			});
 		});
-	}	
+	}
+	
+	function broadCast(message){
+		if (message.dest.name == 'root')
+			io.emit("action", {type:"RECEIVE_MESSAGE", data: message});
+		else
+		{
+			_sockets.forEach(function(socket){
+				if (socket.user.subscriptions.filter(function(val) {return message.dest.id == val.id;}).length > 0)
+				{
+					socket.emit("action", {type:"RECEIVE_MESSAGE", data: message});
+				}
+			});
+		}
+	}
+	
 	return CommunicationLayer;
 })();
 
