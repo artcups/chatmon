@@ -72,11 +72,10 @@ export default class Messages extends React.Component {
 		const mappedMessages = messages.messages.map((message, index) => {
 			debugger;
 			var lastRow = index = messages.messages.length - 1 ? "lastRow" : "";
-			return <li ref={lastRow}>
+			return <li className="chatRow" ref={lastRow}>
 				<div className="left avatar"><img src={pokeball} /></div>
 				<div className="center chatMessage">
-					<label className="userName">{message.sender.userName} posted:</label>
-					<p className="chatText">{message.text}</p>
+					<p className="chatText">[23:25] <label className="userName">{message.sender.userName} </label>{message.text}</p>
 				</div>
 			</li>
 		})
