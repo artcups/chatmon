@@ -22,7 +22,7 @@ import {
 } from 'react-onsenui';
 import ons from 'onsenui';
 import Navbar from "./../components/Navbar";
-const pokeball = require("./../content/img/pokeball.png");
+import FilteredMessageList from "./../components/FilteredMessageList";
 
 
 //@connect(mapStateToProps, mapDispatchToProps)
@@ -32,24 +32,11 @@ export default class Messages extends React.Component {
 		this.state = { messageText: ""}
 	}
 	sendMessage(){
-		this.props.dispatch(sendMessage({text: this.props.messages.latestMessage.text, sender: this.props.user }));
+		this.props.dispatch(sendMessage({text: this.props.messages.latestMessage.text, sender: this.props.user, _id: new Date().getTime() }));
 		this.props.dispatch(updateNewMessageValue(""));
 	}
 
-	renderRow(idx) {
-		return (
-			/*<LazyList length={messages.messages.length}
-			 renderRow={this.renderRow.bind(this)}
-			 calculateItemHeight={() => ons.platform.isAndroid() ? 48 : 44} />*/
-			<ListItem ref="myIndput" className="chatRow" key={idx}>
-				<div className="left avatar"><img src={pokeball} /></div>
-				<div className="center chatMessage">
-					<label className="userName">{this.props.messages.messages[idx].sender.userName} posted:</label>
-					<p className="chatText">{this.props.messages.messages[idx].text}</p>
-				</div>
-			</ListItem>
-		);
-	}
+
 	toggleSideMenu() {
 		if(this.props.application.sideMenuIsOpen)
 			this.props.dispatch(setSidemenuState(false))
@@ -59,26 +46,13 @@ export default class Messages extends React.Component {
 	hide() {
 		this.props.dispatch(setSidemenuState(false))
 	}
-	componentDidUpdate() {
-		console.log(ReactDOM.findDOMNode(this.refs.lastRow))
-		ReactDOM.findDOMNode(this.refs.lastRow).scrollIntoView();
-	}
 
 	render() {
 
-		const { messages } = this.props;
+		const { messages, onValueChange } = this.props;
 		const { latestMessage } = messages;
 		debugger;
-		const mappedMessages = messages.messages.map((message, index) => {
-			debugger;
-			var lastRow = index = messages.messages.length - 1 ? "lastRow" : "";
-			return <li className="chatRow" ref={lastRow}>
-				<div className="left avatar"><img src={pokeball} /></div>
-				<div className="center chatMessage">
-					<p className="chatText">[23:25] <label className="userName">{message.sender.userName} </label>{message.text}</p>
-				</div>
-			</li>
-		})
+
 		return <Splitter>
 					<SplitterSide 	side='left'
 									collapse={true}
@@ -93,9 +67,10 @@ export default class Messages extends React.Component {
 					<SplitterContent>
 						<Page class="page" renderToolbar={() => <Navbar toggleSideMenu={this.toggleSideMenu.bind(this)} headerText="Messages"/> }>
 							<Button ripple onClick={ this.sendMessage.bind(this) }>New messages!</Button>
-							<ul className="chatList">
-								{mappedMessages}
-							</ul>
+
+							<FilteredMessageList onValueChange={onValueChange} messages={messages.messages} />
+
+
 
 							<div>
 								<Input	value={latestMessage.text}

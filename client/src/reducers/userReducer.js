@@ -35,6 +35,16 @@ export default function reducer(state={
             let username = {newUserName: action.data};
             return {...state, ...state.newUser, username}
         }
+        case types.user.NOT_AUTH: {
+            let user = {
+                id: "",
+                name: "",
+                userName: "",
+                team: -1,
+                subscriptions: []
+            };
+            return {...state, user: user}
+        }
     }
 
     return state
