@@ -20,7 +20,7 @@ class NewUser extends React.Component {
 	componentWillUpdate(nextProps, nextState){
 		debugger;
 		if(nextProps.user.user != undefined && nextProps.user.user.userName !== ""){
-			if(nextProps.routing = "")
+			if(nextProps.routing.search = "")
 				this.props.dispatch(push("/"));
 			else
 				this.props.dispatch(push(nextProps.routing.query.next));
