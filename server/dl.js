@@ -2,8 +2,8 @@ var mongoose = require('mongoose'),
     config = require('./config').config;
 
 var DataLayer = (function () {
-  var _userSchema, _db;
-  var User;
+  var _userSchema, _messageSchema, _subscriptionSchema, _db;
+  var User, Message, Subscription;
   
   function DataLayer() {
     mongoose.connect(config.server.mongodb.host);
@@ -12,17 +12,33 @@ var DataLayer = (function () {
     _db = mongoose.connection;
     _db.on('error', console.error.bind(console, 'connection error:'));
     _db.once('open', function() {
-      console.log('Connected to db!');
+      console.log('DB OK');
     });
   }
   
   function initSchemas(){
+		_subscriptionSchema = new mongoose.Schema({
+			name: String,
+			key: String
+		})
+		Subscription = mongoose.model('subscription', _subscriptionSchema);
+		
     _userSchema = new mongoose.Schema({
 			email: String,
 			userName: String,
-			team: Number
+			team: Number,
+			subscriptions: [_subscriptionSchema]
     });
     User = mongoose.model('user', _userSchema);
+		
+		_messageSchema = new mongoose.Schema({
+			source: _userSchema,
+			dest: _subscriptionSchema,
+			content: String,
+			coord: String,
+			date: Date
+		});
+		Message = mongoose.model('message', _messageSchema);
   }
   
   function getUser(email, callback){
@@ -49,26 +65,66 @@ var DataLayer = (function () {
 			}).bind(this)); 
 		return promise;
 	}
-		/*console.log(email, username, team);
-    var newUser = {email: email, userName: username, team: team};
-    User.create(newUser, function(err, user){
-      if (err)
-        return console.error(err);
-			console.log(user);
-			callback(user);
+	
+	function addMessage(source, dest, content, coord){
+		var promise = new Promise((function(resolve, reject){
+				var newMessage = {source: source, dest: dest, content: content, coord: coord, date: new Date()};
+				Message.create(newMessage, function(err, message){
+					if (err)
+						return console.error(err);
+					resolve(message);
+				});
+			}).bind(this)); 
+		return promise;
+	}
+	
+	function getMessages(dest, callback){
+		Message.find({'dest._id': dest._id}).exec(function(err, messages){
+      	callback(messages);
+			});
+	}
+	
+	function addSubscription(name, key){
+		var promise = new Promise((function(resolve, reject){
+				var newSubscription = {name: name, key: key};
+				Subscription.create(newSubscription, function(err, subscription){
+					if (err)
+						return console.error(err);
+					console.log(subscription);
+					resolve(subscription);
+				});
+			}).bind(this)); 
+		return promise;
+	}
+	
+	function getSubscription(name, callback){
+    Subscription.findOne({name: name}).exec(function(err, subscription){
+      callback(subscription);
     });
-  }*/
-  
+  };
+	
   DataLayer.prototype = {
     getAllUsers: function (callback) {
       getAllUsers(callback);
     },
-    getUser: function(id, callback) {
-      getUser(id, callback);
+    getUser: function(email, callback) {
+      getUser(email, callback);
     },
     addUser: function(name, email, team){
       return addUser(name, email, team);
-    }
+    },
+    addMessage: function(source, dest, content, coord){
+      return addMessage(source, dest, content, coord);
+    },
+		getMessages: function(user, callback){
+			getMessages(user, callback);
+		},
+		addSubscription: function(name, key){
+			return addSubscription(name, key);
+		},
+		getSubscription: function(name, callback){
+			return getSubscription(name, callback);
+		}
   }
   return DataLayer;
 })();

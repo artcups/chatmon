@@ -8,7 +8,13 @@ var Auth = (function () {
 	}
 	
 	function authUserConnection(data, callback){
-		console.log('Auth req from: ' + data.email + ' with token ' + data.token);
+		/*if (data.email == 's.lundh@gmail.com')
+		{
+			_dl.getUser('s.lundh@gmail.com', function(user){
+				callback(true, user);
+				return;
+			});
+		}*/
 		checkAuth(data, function(res, user){
 			if (!res && user)
 			{
