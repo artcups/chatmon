@@ -22,8 +22,7 @@ export default function reducer(state={
 				return { ...state, messages: [...state.messages, action.data]}
 			}
 			case types.message.UPDATE_NEW_MESSAGE_VALUE:{
-				let newLatestMessage = { content: action.data};
-				return { ...state, latestMessage: {...state.latestMessage, latestMessage: action.data} }
+				return { ...state, latestMessage: {...state.latestMessage, content: action.data} }
 
 			}
 			case types.message.LATEST_MESSAGES:{
