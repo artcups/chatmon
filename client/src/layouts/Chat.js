@@ -20,10 +20,14 @@ import {
 	Splitter,
 	SplitterSide,
 	SplitterContent,
+	Tabbar,
+	Tab,
+	TabPage,
 } from 'react-onsenui';
 import ons from 'onsenui';
 import Navbar from "./../components/Navbar";
 import FilteredMessageList from "./../components/FilteredMessageList";
+import Map from "./../components/Map";
 
 
 //@connect(mapStateToProps, mapDispatchToProps)
@@ -31,6 +35,10 @@ export default class Messages extends React.Component {
 	constructor(){
 		super();
 		this.state = { messageText: ""}
+		this.style = {
+			width: "100",
+			height: "100"
+		}
 	}
 	sendMessage(){
 		debugger;
@@ -57,6 +65,20 @@ export default class Messages extends React.Component {
 		this.props.dispatch(setSidemenuState(false))
 	}
 
+	//renderTabs() {
+	//	return [
+	//		{
+	//			content: <Page />,
+	//			tab: <ons.Tab label='Home' icon='md-home' />
+	//		},
+	//		{
+	//			content: <Page />,
+	//			tab: <ons.Tab label='Settings' icon='md-settings' />
+	//		}
+	//	]
+	//}
+
+
 	render() {
 
 		const { user, messages, onValueChange } = this.props;
@@ -75,20 +97,40 @@ export default class Messages extends React.Component {
 						</Page>
 					</SplitterSide>
 					<SplitterContent>
-						<Page class="page" renderToolbar={() => <Navbar toggleSideMenu={this.toggleSideMenu.bind(this)} headerText="Messages"/> }>
-							<Button ripple onClick={ this.sendMessage.bind(this) }>New messages!</Button>
-							<Button ripple onClick={ this.addSubscription.bind(this) }>Lägg till ny kanal!</Button>
 
-							<FilteredMessageList onValueChange={onValueChange} messages={messages.messages} />
+						<Page>
+							<Tabbar
+								onPreChange={() => console.log('preChange')}
+								onPostChange={() => console.log('postChange')}
+								onReactive={() => console.log('postChange')}
+								position='top'
+								initialIndex={0}
+								renderTabs={() => [
+									{
+									  content: <Page class="page" renderToolbar={() => <Navbar toggleSideMenu={this.toggleSideMenu.bind(this)} headerText="Messages"/> } title="Messages" >
+									 	 <Button ripple onClick={ this.sendMessage.bind(this) }>New messages!</Button>
+										<Button ripple onClick={ this.addSubscription.bind(this) }>Lägg till ny kanal!</Button>
+										<FilteredMessageList onValueChange={onValueChange} messages={messages.messages} />
 
-
-
-							<div>
-								<Input	value={latestMessage.content}
-										onChange={ this.props.onValueChange.bind(this) } />
-							</div>
+										<div><ons-row verticalAlign="bottom">
+											<ons-input	value={latestMessage.content}
+													placeholder="Say something..."
+													modifier="material"
+													type="text"
+													onChange={ this.props.onValueChange.bind(this) } />
+											</ons-row>
+										</div></Page>,
+									  tab: <Tab label="Messages" icon="md-home" />
+									},
+									{
+									  content: <Page class="page" renderToolbar={() => <Navbar toggleSideMenu={this.toggleSideMenu.bind(this)} headerText="Map"/> } title="Map" ><Map markers={messages} style={this.style}></Map></Page>,
+									  tab: <Tab label="Map" icon="md-settings" />
+									}]
+								  }
+							/>
 						</Page>
 					</SplitterContent>
+
 				</Splitter>
 	}
 }
