@@ -1,10 +1,12 @@
-var debug = process.env.NODE_ENV !== "production";
+const args = process.argv;
+var debug = args.indexOf('--prod') !== -1 ? false : true;
 var webpack = require('webpack');
 var precss = require('precss');
 var autoprefixer = require('autoprefixer');
 var path = require('path');
 
 module.exports = {
+
   context: path.join(__dirname, "src"),
   devtool: debug ? "inline-sourcemap" : null,
   entry: "./client.js",
@@ -12,10 +14,13 @@ module.exports = {
     loaders: [
       {
         test: /\.css$/,
-        loader: "style!css!postcss"
+        include: [
+          path.resolve(__dirname, "not_exist_path")
+        ],
+        loader: "style!css"
       },
       {
-        test: /\.scss$/,
+        test: /(\.css|\.scss)$/,
         exclude: /vendor/,
         loader: "style!css!postcss!sass"
       },
@@ -33,6 +38,9 @@ module.exports = {
       }
     ]
   },
+  postcss: function () {
+    return [autoprefixer];
+  },
   output: {
     path: __dirname + "/www/",
     filename: "client.min.js"
@@ -41,8 +49,5 @@ module.exports = {
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false }),
-  ],
-  postcss: function () {
-    return [autoprefixer];
-  }
+  ]
 };

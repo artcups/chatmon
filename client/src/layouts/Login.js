@@ -3,7 +3,7 @@ import { ReactRedux, connect } from "react-redux"
 import { Router, Route, Link, hashHistory } from 'react-router'
 import { push } from 'react-router-redux'
 import GoogleLogin from 'react-google-login'
-import { authenticateUser } from "./../actions/userActions"
+import { authenticateUser, authenticateGoogle } from "./../actions/userActions"
 import {
 	Page,
 	Button,
@@ -14,7 +14,7 @@ import {
 	Row
 } from 'react-onsenui';
 import ons from 'onsenui';
-import Navbar from "./../components/Navbar";
+
 
 class Login extends React.Component {
 	responseGoogle(response){
@@ -32,13 +32,28 @@ class Login extends React.Component {
 		}
 	}
 
-
+	testLogin(){
+		debugger;
+		this.props.dispatch(authenticateGoogle())
+	}
 	render() {
 		var divStyle = {
 			width: '80%',
 			"textAlign": 'center',
 			margin: '0 auto 0'
 		};
+
+		let loginButton;
+		if(ons.platform.isWebView())
+			loginButton = <Button ripple onClick={ this.testLogin.bind(this) }>Lägg till ny kanal!</Button>
+		else{
+			loginButton = <GoogleLogin
+				clientId="1012200602922-lb4cd19omjm7ku7jijef0dvf7pnhgdff.apps.googleusercontent.com"
+				buttonText="Login"
+				callback={this.responseGoogle.bind(this)}
+				redirectUri="http://localhost"/>
+		}
+
 		return <Page id="login"
 					 /*renderToolbar={() =>
              	<Navbar headerText="Login" /> }*/ >
@@ -48,11 +63,7 @@ class Login extends React.Component {
 					<div id='logoTitle'>
 						<img src={require('./../content/img/logo_title.png')} />
 					</div>
-
-					<GoogleLogin
-						clientId="1012200602922-lb4cd19omjm7ku7jijef0dvf7pnhgdff.apps.googleusercontent.com"
-						buttonText="Login"
-						callback={this.responseGoogle.bind(this)} />
+					{ loginButton }
 				</div>
 
 
