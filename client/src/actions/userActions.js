@@ -31,3 +31,19 @@ export function updateNewUserNameValue(value) {
     data: value
   }
 }
+export function authenticateGoogle(){
+    return function(dispatch) {
+        window.plugins.googleplus.login(
+            {
+              'scopes': 'email openid profile',
+              'webClientId': '1012200602922-lb4cd19omjm7ku7jijef0dvf7pnhgdff.apps.googleusercontent.com', // optional clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
+            },
+            function (res) {
+                dispatch({type: types.server.AUTHENTICATE_USER, data: {token: res.idToken, email: res.email}})
+            },
+            function (msg) {
+              alert('error: ' + msg);
+            }
+        );
+  }
+}

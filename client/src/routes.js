@@ -8,15 +8,6 @@ import Login from "./layouts/Login"
 import NewUser from "./layouts/NewUser"
 import {RequireAuthentication} from "./components/RequireAuthentication"
 
-function requireAuth() {
-    debugger;
-   /* return (nextState, replace) => {
-        let { user } = store.getState().user;
-        if (user.id === null)
-            replace({ pathname: "/login", query: { return_to: nextState.location.pathname } });
-    };*/
-}
-
 const routes = (
     <Route path="/" component={Layout}>
         <IndexRoute component={RequireAuthentication(Messages)} />
