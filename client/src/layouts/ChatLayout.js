@@ -99,7 +99,7 @@ export default class ChatLayout extends React.Component {
 	}
 	render() {
 
-		const { user, messages, onValueChange } = this.props;
+		const { user, messages, onMessageValueChange } = this.props;
 		const { latestMessage } = messages;
 		return <Splitter>
 					<SplitterSide 	side='left'
@@ -143,7 +143,7 @@ export default class ChatLayout extends React.Component {
 													<Chat toggleSideMenu={this.toggleSideMenu}
 															sendMessage={this.sendMessage}
 															addSubscription={this.addSubscription}
-															onValueChange={onMessageValueChage}
+															onValueChange={onMessageValueChange}
 															messages={messages.messages}
 															latestMessage={latestMessage}
 															ref="chat" />
