@@ -25,13 +25,15 @@ import {
 	TabPage,
 } from 'react-onsenui';
 import ons from 'onsenui';
-import Navbar from "./../components/Navbar";
+
 import FilteredMessageList from "./../components/FilteredMessageList";
 import Map from "./../components/Map";
+import Chat from "./../components/Chat";
+import Navbar from "./../components/Navbar";
 
 
 //@connect(mapStateToProps, mapDispatchToProps)
-export default class Messages extends React.Component {
+export default class ChatLayout extends React.Component {
 	constructor(){
 		super();
 		this.state = { messageText: ""}
@@ -78,13 +80,16 @@ export default class Messages extends React.Component {
 	//	]
 	//}
 
+	resizeMap(){
+		debugger;
+		console.log('postChange');
+		
 
+	}
 	render() {
 
 		const { user, messages, onValueChange } = this.props;
 		const { latestMessage } = messages;
-		debugger;
-
 		return <Splitter>
 					<SplitterSide 	side='left'
 									collapse={true}
@@ -97,40 +102,38 @@ export default class Messages extends React.Component {
 						</Page>
 					</SplitterSide>
 					<SplitterContent>
-
 						<Page>
 							<Tabbar
 								onPreChange={() => console.log('preChange')}
-								onPostChange={() => console.log('postChange')}
+								onPostChange={this.resizeMap.bind(this)}
 								onReactive={() => console.log('postChange')}
 								position='top'
 								initialIndex={0}
+								ref="tabs"
+								className="dasda"
 								renderTabs={() => [
-									{
-									  content: <Page class="page" renderToolbar={() => <Navbar toggleSideMenu={this.toggleSideMenu.bind(this)} headerText="Messages"/> } title="Messages" >
-									 	 <Button ripple onClick={ this.sendMessage.bind(this) }>New messages!</Button>
-										<Button ripple onClick={ this.addSubscription.bind(this) }>Lägg till ny kanal!</Button>
-										<FilteredMessageList onValueChange={onValueChange} messages={messages.messages} />
-
-										<div><ons-row verticalAlign="bottom">
-											<ons-input	value={latestMessage.content}
-													placeholder="Say something..."
-													modifier="material"
-													type="text"
-													onChange={ this.props.onValueChange.bind(this) } />
-											</ons-row>
-										</div></Page>,
-									  tab: <Tab label="Messages" icon="md-home" />
+{
+									  content: <Page ref="chat" key="0" class="page" renderToolbar={() =>
+									  			<Navbar toggleSideMenu={this.toggleSideMenu.bind(this)} headerText="Messages"/> } title="Messages" >
+													<Chat toggleSideMenu={this.toggleSideMenu}
+															sendMessage={this.sendMessage}
+															addSubscription={this.addSubscription}
+															onValueChange={onValueChange}
+															messages={messages.messages}
+															latestMessage={latestMessage}
+															ref="chat" />
+												</Page>
+									  ,
+									  tab: <Tab key="0" label="Messages" icon="md-home" />
 									},
 									{
-									  content: <Page class="page" renderToolbar={() => <Navbar toggleSideMenu={this.toggleSideMenu.bind(this)} headerText="Map"/> } title="Map" ><Map markers={messages} style={this.style}></Map></Page>,
-									  tab: <Tab label="Map" icon="md-settings" />
+									  content: <Page key="1" class="page" renderToolbar={() => <Navbar toggleSideMenu={this.toggleSideMenu.bind(this)} headerText="Map"/> } title="Map" ><Map ref="map" markers={messages} style={this.style}></Map></Page>,
+									  tab: <Tab key="1" label="Map" icon="md-settings" />
 									}]
 								  }
 							/>
 						</Page>
 					</SplitterContent>
-
 				</Splitter>
 	}
 }
@@ -152,4 +155,4 @@ function mapDispatchToProps(dispatch) {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Messages);
+export default connect(mapStateToProps, mapDispatchToProps)(ChatLayout);

@@ -1,7 +1,8 @@
 import types from "../actions/types"
 
 export default function reducer(state={
-	sideMenuIsOpen: false
+	sideMenuIsOpen: false,
+	chatTab: 0
 }, action) {
 
 	switch (action.type) {
