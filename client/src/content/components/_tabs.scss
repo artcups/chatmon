@@ -1,0 +1,23 @@
+.tabs {
+	list-style: none;
+	position: absolute;
+	width: 100%;
+	padding: 10px 0;
+	border-bottom: 1px solid #bbbbbb;
+	margin: 0;
+
+	li{
+		display: inline-block;
+		width: 50%;
+		text-align: center;
+	}
+}
+
+.tabContent{
+	width: 100%;
+	margin-top: 41px;
+	height: calc(100% - 41px);
+	> div {
+		height: 100%;
+	}
+}

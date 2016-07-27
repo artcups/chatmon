@@ -43,14 +43,6 @@ export default class Map extends Component {
         }
     }
     shouldComponentUpdate = shouldPureComponentUpdate;
-    getDimensions() {
-        // Do some stuff here to return dimensions
-        let style = {
-            width: "436px",
-            height: "724px"
-        }
-        return style;
-    };
     //_onClick = ({x, y, lat, lng, event}) => console.log(x, y, lat, lng, event)
     render() {
 
@@ -68,12 +60,7 @@ export default class Map extends Component {
                     ].map((cord, i) => <MapIcon key={i} lat={cord.lat} lng={cord.lng} onClick={this._onClick} />);
         //const Cords = this.props.markers.latestMessage.pointsOfInterest.content.map((cord, i) => <MapIcon key={i} lat={cord.lat} lng={cord.lng} onClick={this._onClick} />);
         const key = "AIzaSyAMUqHJyxbFqkQbdYEizz_TNGZ_mUcAujw";
-        const style = this.getDimensions();
-        return (
-            <div ref="mapContainer" >
-                <GoogleMap
-                    style={style}
-                    ref="googleMaps"
+        return (<GoogleMap
                     bootstrapURLKeys={{key: key}} // set if you need stats etc ...
                     center={this.props.center}
                     zoom={this.props.zoom}>
@@ -81,8 +68,6 @@ export default class Map extends Component {
                     <MapIcon lat={59.326633} lng={18.071737} text={'A'} /* Kreyser Avrora */ />
                     <MapIcon {...this.props.greatPlaceCoords} text={'B'} /* road circle */ />
                 </GoogleMap>
-            </div>
-
         );
     }
 }

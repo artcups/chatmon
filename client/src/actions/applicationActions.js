@@ -1,6 +1,6 @@
 import types from "./types"
-export function setSidemenuState(isOpen){
-    return { type: types.application.SET_SIDEMENU, data: isOpen}
+export function toggleSideMenu(){
+    return { type: types.application.TOGGLE_SIDEMENU, data: ""}
 }
 export function setChannelJoinDialogState(isOpen){
     return { type: types.application.SET_CHANNELJOINDIALOG, data: isOpen}

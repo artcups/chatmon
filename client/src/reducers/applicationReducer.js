@@ -7,8 +7,8 @@ export default function reducer(state={
 }, action) {
 
 	switch (action.type) {
-		case types.application.SET_SIDEMENU: {
-			return { ...state, sideMenuIsOpen: action.data}
+		case types.application.TOGGLE_SIDEMENU: {
+			return { ...state, sideMenuIsOpen: !state.sideMenuIsOpen}
 		}
 		case types.application.SET_CHANNELJOINDIALOG: {
 			return { ...state, channelJoinDialogIsOpen: action.data}
