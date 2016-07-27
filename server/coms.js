@@ -73,15 +73,39 @@ var CommunicationLayer = (function () {
 						socket.emit("action", {type: "LATEST_MESSAGES", data: messages})
 					})
 					break;
-				case "server/ADD_SUBSCRIPTION":
+				case "server/NEW_DEST":
 					if (!socket.user)
 						return;
-					_dl.addSubscription(action.data.name, action.data.key).then(function(subscription){
-						socket.user.subscriptions.push(subscription);
-						socket.user.save();
-						socket.emit("action", {type: "SET_USER", data: socket.user})
-					});
-					break;
+					_dl.getSubscription(action.data.name, function(subscription){
+						if (!subscription)
+						{
+							_dl.addSubscription(action.data.name, action.data.key).then(function(subscription){
+								socket.user.subscriptions.push(subscription);
+								socket.user.save();
+								socket.emit("action", {type: "SET_USER", data: socket.user});
+								return;
+							})
+						}
+						else
+						{
+							if (action.key != subscription.key){
+								socket.emit("action", {type: "WRONG_KEY_ROOM_EXISTS", data: {name: subscription.name}});
+								return;
+							}
+							else
+							{
+								if (socket.user.subscriptions.filter(function(val) {return subscription.name == val.name;}).length > 0)
+								{
+									socket.emit("action", {type: "ALREADY_JOINED_SUBSCRIPTION", data: subscription.name});
+									return;
+								}
+								socket.user.subscriptions.push(subscription);
+								socket.user.save();
+								socket.emit("action", {type: "SET_USER", data: socket.user});
+								return;
+							}
+						}
+					})
 				default:
 					{
 						console.log("Nothing there")
