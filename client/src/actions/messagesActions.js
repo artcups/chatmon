@@ -15,3 +15,9 @@ export function updateDest(dest) {
 		data: dest
 	}
 }
+export function newDest(name, key) {
+	return {
+		type: types.message.NEW_DEST,
+		data: {name: name, key: key}
+	}
+}
