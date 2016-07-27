@@ -3,9 +3,9 @@ import ReactDOM from "react-dom"
 import { connect } from "react-redux"
 import { Router, Route, Link, hashHistory } from 'react-router'
 import { push } from 'react-router-redux'
-import { updateNewMessageValue, sendMessage, latestMessages, updateDest } from "../actions/messagesActions"
+import { updateNewMessageValue, sendMessage, latestMessages, updateDest, newDest } from "../actions/messagesActions"
 import { addSubscription } from "../actions/subscriptionsActions"
-import { setSidemenuState } from "../actions/applicationActions"
+import { setSidemenuState, setChannelJoinDialogState } from "../actions/applicationActions"
 import {
 	Page,
 	Button,
@@ -23,6 +23,7 @@ import {
 	Tabbar,
 	Tab,
 	TabPage,
+	Dialog
 } from 'react-onsenui';
 import ons from 'onsenui';
 
@@ -67,6 +68,16 @@ export default class ChatLayout extends React.Component {
 		this.props.dispatch(setSidemenuState(false))
 	}
 
+	toggleChannelJoinDialog() {
+		if(this.props.application.channelJoinDialogIsOpen)
+			this.props.dispatch(setChannelJoinDialogState(false))
+		else
+			this.props.dispatch(setChannelJoinDialogState(true))
+	}
+	hideChannelJoinDialog() {
+		this.props.dispatch(setChannelJoinDialogState(false))
+	}
+
 	//renderTabs() {
 	//	return [
 	//		{
@@ -97,6 +108,21 @@ export default class ChatLayout extends React.Component {
 									onClose={this.hide.bind(this)}
 									isSwipeable={true}>
 						<Page>
+							<Button onClick={this.toggleChannelJoinDialog.bind(this)} >Join/Create</Button>
+							<Dialog isOpen={this.props.application.channelJoinDialogIsOpen}
+									cancelable
+									onCancel={this.hideChannelJoinDialog.bind(this)}>
+
+								<label>Channel name:</label><br/>
+								<Input id="channelNameValue" onChange={this.props.onChannelNameValueChange.bind(this)}/>
+								<br/><label>Channel password:</label><br/>
+									<Input id="channelPasswordValue" onChange={this.props.onChannelPasswordValueChange.bind(this)}/><br/>
+
+								<Button>Join/Create</Button>
+								<Button onClick={this.hideChannelJoinDialog.bind(this)}>
+									Close
+								</Button>
+							</Dialog>
 							<List 	dataSource={user.subscriptions}
 									renderRow={(subscription) => ( <ListItem key={subscription._id} onClick={() => this.toogleDest(subscription)} tappable>{subscription.name}</ListItem> )} />
 						</Page>
@@ -111,14 +137,13 @@ export default class ChatLayout extends React.Component {
 								initialIndex={0}
 								ref="tabs"
 								className="dasda"
-								renderTabs={() => [
-{
+								renderTabs={() => [{
 									  content: <Page ref="chat" key="0" class="page" renderToolbar={() =>
 									  			<Navbar toggleSideMenu={this.toggleSideMenu.bind(this)} headerText="Messages"/> } title="Messages" >
 													<Chat toggleSideMenu={this.toggleSideMenu}
 															sendMessage={this.sendMessage}
 															addSubscription={this.addSubscription}
-															onValueChange={onValueChange}
+															onValueChange={onMessageValueChage}
 															messages={messages.messages}
 															latestMessage={latestMessage}
 															ref="chat" />
@@ -149,8 +174,14 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		onValueChange: (e) => {
+		onMessageValueChange: (e) => {
 			dispatch(updateNewMessageValue(e.target.value))
+		},
+		onChannelNameValueChange: (e) => {
+			dispatch(newDest(e.target.value, document.getElementById("channelPasswordValue").value))
+		},
+		onChannelPasswordValueChange: (e) => {
+			dispatch(newDest(document.getElementById("channelNameValue").value, e.target.value))
 		}
 	};
 }

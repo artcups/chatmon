@@ -2,12 +2,16 @@ import types from "../actions/types"
 
 export default function reducer(state={
 	sideMenuIsOpen: false,
-	chatTab: 0
+	chatTab: 0,
+	channelJoinDialogIsOpen: false
 }, action) {
 
 	switch (action.type) {
 		case types.application.SET_SIDEMENU: {
 			return { ...state, sideMenuIsOpen: action.data}
+		}
+		case types.application.SET_CHANNELJOINDIALOG: {
+			return { ...state, channelJoinDialogIsOpen: action.data}
 		}
 
 	}
