@@ -1,5 +1,6 @@
 const args = process.argv;
 var debug = args.indexOf('--prod') !== -1 ? false : true;
+var app = args.indexOf('--app') !== -1 ? true : false;
 var webpack = require('webpack');
 var precss = require('precss');
 var autoprefixer = require('autoprefixer');
@@ -42,7 +43,7 @@ module.exports = {
     return [autoprefixer];
   },
   output: {
-    path: __dirname + "/www/",
+    path: app ? __dirname + "/chatmon/www/" : __dirname + "/www/",
     filename: "client.min.js"
   },
   plugins: debug ? [] : [

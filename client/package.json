@@ -6,8 +6,10 @@
   "scripts": {
     "dev-server": "webpack-dev-server --content-base www --inline --hot --port 8081 --http://chatmon",
     "dev": "webpack --watch --progress --colors",
+    "dev-app": "webpack --watch --progress --app --colors",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prod": "set NODE_ENV=production && webpack --prod --progress --colors"
+    "prod": "set NODE_ENV=production && webpack --prod --progress --colors",
+    "prod-app": "set NODE_ENV=production && webpack --prod --app --progress --colors"
   },
   "dependencies": {
     "autoprefixer": "^6.3.7",

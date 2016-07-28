@@ -6,8 +6,18 @@
     <!-- change this up! http://www.bootstrapcdn.com/bootswatch/ -->
 
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic,500,500italic,700,700italic' rel='stylesheet' type='text/css'>
-    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
-
+    <meta http-equiv="Content-Security-Policy" content="default-src
+        'self' data: gap: https://ssl.gstatic.com
+        'self' http://162.243.162.123:3000
+        'self' https://fonts.gstatic.com
+        'self' https://fonts.googleapis.com
+        'self' https://accounts.google.com
+        'self' https://csi.gstatic.com
+        'self' ws://162.243.162.123:3000
+        'self' https://maps.googleapis.com
+        'self' http://apis.google.com
+        'self' https://maps.gstatic.com
+        'unsafe-eval'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; media-src *">
   </head>
   <style>
     .text-input--material__label {

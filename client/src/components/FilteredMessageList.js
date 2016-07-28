@@ -12,7 +12,7 @@ export default class FilteredMessageList extends React.Component {
 
 	render(){
 		const { messages } = this.props;
-		const pokeball = require("./../content/img/Pokeball.png");
+		const pokeball = require("./../content/img/pokeball.png");
 
 
 		const mappedMessages = messages.map((message, index) => {

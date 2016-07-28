@@ -16,7 +16,8 @@ export default function reducer(state={
         newUserName: "",
         createNewUser: false,
         userNameOk: true
-    }
+    },
+    loggingIn: false
 
   }, action) {
     switch (action.type) {
@@ -27,8 +28,7 @@ export default function reducer(state={
             return { ...state, newUser: {...state.newUser, createNewUser: action.data.createNewUser}}
         }
         case types.server.AUTHENTICATE_USER: {
-
-            return { ...state, newUser: {...state.newUser, token: action.data.token, authEmail: action.data.email} }
+            return { ...state, newUser: {...state.newUser, token: action.data.token, authEmail: action.data.email}, loggingIn: false }
         }
         case types.user.UPDATE_NEW_USERNAME_VALUE: {
             return { ...state, newUser: {...state.newUser, newUserName: action.data}}
@@ -41,7 +41,10 @@ export default function reducer(state={
                 team: -1,
                 subscriptions: []
             };
-            return {...state, user: user}
+            return {...state, user: user, loggingIn: false}
+        }
+        case types.user.INIT_LOGIN: {
+            return {...state, loggingIn: true}
         }
     }
 

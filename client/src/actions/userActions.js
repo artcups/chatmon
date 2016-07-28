@@ -33,6 +33,7 @@ export function updateNewUserNameValue(value) {
 }
 export function authenticateGoogle(){
     return function(dispatch) {
+        dispatch({type: types.user.INIT_LOGIN})
         window.plugins.googleplus.login(
             {
               'scopes': 'email openid profile',

@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import shouldPureComponentUpdate from 'react-pure-render/function';
-import mindLogo from '../content/img/Pokeball.png';
+import mindLogo from '../content/img/pokeball.png';
 
 export default class MapIcon extends Component {
     static propTypes = {

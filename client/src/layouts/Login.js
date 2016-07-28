@@ -11,7 +11,8 @@ import {
 	Icon,
 	Input,
 	ToolbarButton,
-	Row
+	Row,
+	ProgressCircular
 } from 'react-onsenui';
 import ons from 'onsenui';
 
@@ -23,7 +24,6 @@ class Login extends React.Component {
 	}
 
 	componentWillUpdate(nextProps, nextState){
-		debugger;
 		if(nextProps.user.user != undefined && nextProps.user.user.id !== ""){
 			this.props.dispatch(push(nextProps.routing.query.next))
 		}else if(nextProps.user.newUser.createNewUser && nextProps.user.newUser.authEmail != ""){
@@ -33,7 +33,6 @@ class Login extends React.Component {
 	}
 
 	testLogin(){
-		debugger;
 		this.props.dispatch(authenticateGoogle())
 	}
 	render() {
@@ -45,7 +44,7 @@ class Login extends React.Component {
 
 		let loginButton;
 		if(ons.platform.isWebView())
-			loginButton = <Button ripple onClick={ this.testLogin.bind(this) }>Lägg till ny kanal!</Button>
+			loginButton = <Button ripple onClick={ this.testLogin.bind(this) }>Logga in with google</Button>
 		else{
 			loginButton = <GoogleLogin
 				clientId="1012200602922-lb4cd19omjm7ku7jijef0dvf7pnhgdff.apps.googleusercontent.com"
@@ -54,15 +53,19 @@ class Login extends React.Component {
 				redirectUri="http://localhost"/>
 		}
 
+		if(this.props.user.loggingIn)
+			loginButton = <ProgressCircular indeterminate />
+
+
 		return <Page id="login"
 					 /*renderToolbar={() =>
              	<Navbar headerText="Login" /> }*/ >
-
 				<div style={divStyle}>
 					<img id='logo' src={require('./../content/img/logo_react.png')} />
 					<div id='logoTitle'>
 						<img src={require('./../content/img/logo_title.png')} />
 					</div>
+
 					{ loginButton }
 				</div>
 

@@ -4,6 +4,7 @@ import { Router, Route, Link, hashHistory } from 'react-router'
 import GoogleMap from 'google-map-react';
 import MapIcon from './../components/MapIcon.js';
 import shouldPureComponentUpdate from 'react-pure-render/function';
+import  {fetchPosition} from "./../actions/mapActions";
 
 
 //@connect(mapStateToProps, mapDispatchToProps)
@@ -20,7 +21,6 @@ export default class Map extends Component {
 		zoom: 11,
 		greatPlaceCoords: {lat: 59.3963944, lng: 17.8515504}
 	};
-
 	constructor(props) {
 		super(props);
 	}
@@ -42,8 +42,11 @@ export default class Map extends Component {
 	}
 	shouldComponentUpdate = shouldPureComponentUpdate;
 	//_onClick = ({x, y, lat, lng, event}) => console.log(x, y, lat, lng, event)
-	render() {
 
+
+
+	render() {
+		const key = "AIzaSyAMUqHJyxbFqkQbdYEizz_TNGZ_mUcAujw";
 		const Cords = [
 			{title: "Title", lat: 59.34541678, lng: 18.1822184},
 			{title: "Title", lat: 59.36392828, lng: 18.05248107},
@@ -56,17 +59,16 @@ export default class Map extends Component {
 			{title: "Title", lat: 59.24203335, lng: 18.03614352},
 			{title: "Title", lat: 59.2657605, lng: 18.09346632}
 		].map((cord, i) => <MapIcon key={i} lat={cord.lat} lng={cord.lng} onClick={this._onClick} />);
+
 		//const Cords = this.props.markers.latestMessage.pointsOfInterest.content.map((cord, i) => <MapIcon key={i} lat={cord.lat} lng={cord.lng} onClick={this._onClick} />);
-		const key = "AIzaSyAMUqHJyxbFqkQbdYEizz_TNGZ_mUcAujw";
-		return (<GoogleMap
-				bootstrapURLKeys={{key: key}} // set if you need stats etc ...
-				center={this.props.center}
-				zoom={this.props.zoom}>
-				{Cords}
-				<MapIcon lat={59.326633} lng={18.071737} text={'A'} /* Kreyser Avrora */ />
-				<MapIcon {...this.props.greatPlaceCoords} text={'B'} /* road circle */ />
-			</GoogleMap>
-		);
+		return <GoogleMap
+			bootstrapURLKeys={{key: key}} // set if you need stats etc ...
+			center={[this.props.map.position.latitude, this.props.map.position.longitude]}
+			zoom={this.props.zoom}>
+			{Cords}
+			<MapIcon lat={59.326633} lng={18.071737} text={'A'} /* Kreyser Avrora */ />
+			<MapIcon {...this.props.greatPlaceCoords} text={'B'} /* road circle */ />
+		</GoogleMap>;
 	}
 }
 
@@ -75,7 +77,8 @@ function mapStateToProps(state) {
 		user: state.user.user,
 		messages: state.messages,
 		location: state.location,
-		application: state.application
+		application: state.application,
+		map: state.map
 	};
 }
 

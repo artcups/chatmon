@@ -1,23 +1,32 @@
 import React from "react"
-import { Link, hashHistory } from 'react-router'
-import {
-	Page,
-	Button,
-	Toolbar,
-	Icon,
-	Input,
-	ToolbarButton,
-	Row
-} from 'react-onsenui';
+import { ReactRedux, connect } from "react-redux"
+import  {fetchPosition} from "./../actions/mapActions";
 
-// load Onsen UI library
-import ons from 'onsenui';
+class Layout extends React.Component {
 
-
-export default function Layout({ children }) {
-	let toolbarButton;
-
-	 return (
-		 <div>{children}</div>
-	)
+	componentWillMount(){
+		console.log("då")
+		this.getPosition();
+	}
+	componentWillUnmount(){
+		console.log("hej")
+		if(this.props.map.status == -1)
+			this.getPosition();
+	}
+	getPosition(){
+		if(this.props.map.status == -1 && this.props.map.status != 1)
+			this.props.dispatch(fetchPosition())
+	}
+	render(){
+		return <div>{ this.props.children }</div>
+	}
 }
+
+var mapStateToProps = function(state){
+	// This component will have access to `state.battlefield` through `this.props.battle`
+	return {
+		user: state.user,
+		map: state.map
+	};
+};
+export default connect(mapStateToProps)(Layout);

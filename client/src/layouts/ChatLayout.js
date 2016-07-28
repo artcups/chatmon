@@ -48,11 +48,6 @@ export default class ChatLayout extends React.Component {
 
 		const { user, messages, onMessageValueChange, toggleSideMenu,  children } = this.props;
 		const { latestMessage } = messages;
-		const style = {
-			width: "100%",
-			height: "100%"
-		}
-		debugger;
 		return <Splitter>
 					<SplitterSide 	side='left'
 									collapse={true}
@@ -84,7 +79,7 @@ export default class ChatLayout extends React.Component {
 							<Navbar toggleSideMenu={toggleSideMenu.bind(this)} headerText="Messages" title="Messages" />
 							<ul className="tabs">
 								<li onClick={ () => { this.props.changeRoute("flow") }}>Chat</li>
-								<li onClick={ () => { this.props.changeRoute("map") }} >Map</li>
+								<li disabled={ this.props.map.position != null } onClick={ () => { this.props.changeRoute("map") }} >Map</li>
 							</ul>
 							<div className="tabContent">
 								{ children }
@@ -100,7 +95,8 @@ function mapStateToProps(state) {
 		user: state.user.user,
 		messages: state.messages,
 		location: state.location,
-		application: state.application
+		application: state.application,
+		map: state.map
 	};
 }
 
