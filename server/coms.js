@@ -24,6 +24,7 @@ var CommunicationLayer = (function () {
 		io.on('connection', function (socket) {
 			console.log('CONNECTION FROM ' + socket.handshake.address);
 			socket.on('action', (action) => {
+			console.log(action);
 			switch(action.type) {
 				case "server/SEND_MESSAGE":
 					if (!socket.user)
@@ -33,7 +34,19 @@ var CommunicationLayer = (function () {
 						return;
 					}
 					console.log("SEND_MESSAGE FROM " + socket.user.userName);
-					_dl.addMessage(socket.user, action.data.dest, action.data.content, action.data.coord).then(function(message){
+					_dl.addMessage(socket.user, action.data.dest, action.data.content, action.data.long, action.data.lat).then(function(message){
+						broadCast(message);
+					});
+					break;
+				case "server/SEND_POI":
+					if (!socket.user)
+					{
+						console.log("Unauthed socket tried to send POI", action.data);
+						socket.emit("action", {type: "NOT_AUTH", data: action.data});
+						return;
+					}
+					console.log("SEND_POI FROM " + socket.user.userName);
+					_dl.addPOI(socket.user, action.data.dest, action.data.content, action.data.long, action.data.lat).then(function(message){
 						broadCast(message);
 					});
 					break;
@@ -69,8 +82,13 @@ var CommunicationLayer = (function () {
 					});
 					break;
 				case "server/GET_MESSAGES":
-					_dl.getMessages(action.data, function(messages){
+					_dl.getMessages(action.data, 0, function(messages){
 						socket.emit("action", {type: "LATEST_MESSAGES", data: messages})
+					})
+					break;
+				case "server/GET_POI":
+					_dl.getMessages(action.data, 1, function(messages){
+						socket.emit("action", {type: "LATEST_POI", data: messages})
 					})
 					break;
 				case "server/NEW_DEST":
@@ -80,6 +98,7 @@ var CommunicationLayer = (function () {
 						if (!subscription)
 						{
 							_dl.addSubscription(action.data.name, action.data.key).then(function(subscription){
+								console.log("ADDED SUBSCRIPTION:", subscription);
 								socket.user.subscriptions.push(subscription);
 								socket.user.save();
 								socket.emit("action", {type: "SET_USER", data: socket.user});
@@ -88,7 +107,7 @@ var CommunicationLayer = (function () {
 						}
 						else
 						{
-							if (action.key != subscription.key){
+							if (action.data.key != subscription.key){
 								socket.emit("action", {type: "WRONG_KEY_ROOM_EXISTS", data: {name: subscription.name}});
 								return;
 							}
@@ -102,6 +121,9 @@ var CommunicationLayer = (function () {
 								socket.user.subscriptions.push(subscription);
 								socket.user.save();
 								socket.emit("action", {type: "SET_USER", data: socket.user});
+								_dl.getMessages(subscription.name, function(messages){
+									socket.emit("action", {type: "LATEST_MESSAGES", data: messages})
+								});
 								return;
 							}
 						}
