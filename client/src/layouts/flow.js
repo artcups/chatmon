@@ -3,7 +3,7 @@ import ReactDOM from "react-dom"
 import { connect } from "react-redux"
 import { Router, Route, Link, hashHistory } from 'react-router'
 import { push } from 'react-router-redux'
-import { updateNewMessageValue, sendMessage, latestMessages, updateDest, newDest } from "../actions/messagesActions"
+import { updateNewMessageValue, sendMessage,sendPio, latestMessages, updateDest, newDest } from "../actions/messagesActions"
 import { addSubscription } from "../actions/subscriptionsActions"
 import { setSidemenuState, setChannelJoinDialogState } from "../actions/applicationActions"
 import {
@@ -42,7 +42,12 @@ export default class ChatLayout extends React.Component {
 	}
 	sendMessage(){
 		debugger;
-		this.props.dispatch(sendMessage(this.props.messages.latestMessage.content, this.props.user, this.props.messages.latestMessage.dest));
+		this.props.dispatch(sendMessage(this.props.messages.latestMessage.content, this.props.messages.latestMessage.dest));
+		this.props.dispatch(updateNewMessageValue(""));
+	}
+	sendPio(){
+		debugger;
+		this.props.dispatch(sendPio(this.props.messages.latestMessage.content, this.props.messages.latestMessage.dest));
 		this.props.dispatch(updateNewMessageValue(""));
 	}
 	addSubscription(){
@@ -55,6 +60,7 @@ export default class ChatLayout extends React.Component {
 		const { latestMessage } = messages;
 		return <div>
 			<Button ripple onClick={ this.sendMessage.bind(this) }>New messages!</Button>
+			<Button ripple onClick={ this.sendPio.bind(this) }>New pio!</Button>
 			<Button ripple onClick={ this.addSubscription.bind(this) }>Lägg till ny kanal!</Button>
 			<FilteredMessageList onValueChange={onMessageValueChange} messages={messages.messages} />
 

@@ -1,3 +1,7 @@
+import { persistStore, autoRehydrate } from 'redux-persist'
+import localForage from 'localForage'
+import createActionBuffer from 'redux-action-buffer'
+import {REHYDRATE} from 'redux-persist/constants'
 import {  createStore, combineReducers, compose, applyMiddleware } from "redux"
 import logger from "redux-logger"
 import thunkMiddleware from "redux-thunk"
@@ -20,15 +24,15 @@ export function configureStore(history, initialState) {
         initialState,
         compose(
             applyMiddleware(
-
                 thunkMiddleware,
                 promise(),
                 routerMiddleware(history),
                 socketIoMiddleware,
+                createActionBuffer(REHYDRATE),
                 logger()
             )
         )
     )
-
+    persistStore(store, {storage: localForage})
     return store;
 }

@@ -1,6 +1,6 @@
 
 import types from "./types"
-export function sendMessage(content, source, dest){
+export function sendMessage(content, dest){
 	return function(dispatch) {
 		//Google login window.nånting nånting then action boom
 
@@ -8,13 +8,30 @@ export function sendMessage(content, source, dest){
 		navigator.geolocation.getCurrentPosition(
 			(position) => {
 				console.log("success")
-				dispatch({ type: types.server.SEND_MESSAGE, data: {content, source, coord: position.coords.latitude+","+position.coords.longitude, dest}})
+				dispatch({ type: types.server.SEND_MESSAGE, data: {content, lat: position.coords.latitude, long: position.coords.longitude, dest}})
 			},
 			(error) => {
 				console.log("error")
 				dispatch({type: types.map.FETCH_POSITION_ERROR, data: error.message})
 			}, { timeout: 5000, enableHighAccuracy: true })
 	}
+}
+export function sendPio(content, dest){
+	return { type: types.server.SEND_PIO, data: {content, lat: 59.326633, long: 18.071737, dest}}
+	/*return function(dispatch) {
+		//Google login window.nånting nånting then action boom
+
+		dispatch({type: types.message.SENDING_PIO})
+		navigator.geolocation.getCurrentPosition(
+			(position) => {
+				console.log("success")
+				dispatch({ type: types.server.SEND_PIO, data: {content, lat: position.coords.latitude, long: position.coords.longitude, dest}})
+			},
+			(error) => {
+				console.log("error")
+				dispatch({type: types.map.FETCH_POSITION_ERROR, data: error.message})
+			}, { timeout: 5000, enableHighAccuracy: true })
+	}*/
 }
 export function updateNewMessageValue(text){
 	return { type: types.message.UPDATE_NEW_MESSAGE_VALUE, data: text}
