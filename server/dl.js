@@ -35,8 +35,10 @@ var DataLayer = (function () {
 			source: _userSchema,
 			dest: _subscriptionSchema,
 			content: String,
-			coord: String,
-			date: Date
+			long: String,
+			lat: String,
+			date: Date,
+			type: Number
 		});
 		Message = mongoose.model('message', _messageSchema);
   }
@@ -66,9 +68,9 @@ var DataLayer = (function () {
 		return promise;
 	}
 	
-	function addMessage(source, dest, content, coord){
+	function addMessage(source, dest, content, long, lat){
 		var promise = new Promise((function(resolve, reject){
-				var newMessage = {source: source, dest: dest, content: content, coord: coord, date: new Date()};
+				var newMessage = {source: source, dest: dest, content: content, long: long, lat: lat, date: new Date(), type: 0};
 				Message.create(newMessage, function(err, message){
 					if (err)
 						return console.error(err);
@@ -78,8 +80,20 @@ var DataLayer = (function () {
 		return promise;
 	}
 	
-	function getMessages(dest, callback){
-		Message.find({'dest._id': dest._id}).exec(function(err, messages){
+	function addPOI(source, dest, content, long, lat){
+		var promise = new Promise((function(resolve, reject){
+				var newPOI = {source: source, dest: dest, content: content, long: long, lat: lat, date: new Date(), type: 1};
+				Message.create(newMessage, function(err, message){
+					if (err)
+						return console.error(err);
+					resolve(message);
+				});
+			}).bind(this)); 
+		return promise;
+	}
+	
+	function getMessages(dest, type, callback){
+		Message.find({'dest._id': dest._id, type: type}).exec(function(err, messages){
       	callback(messages);
 			});
 	}
@@ -113,11 +127,14 @@ var DataLayer = (function () {
     addUser: function(name, email, team){
       return addUser(name, email, team);
     },
-    addMessage: function(source, dest, content, coord){
-      return addMessage(source, dest, content, coord);
+    addMessage: function(source, dest, content, long, lat){
+      return addMessage(source, dest, content, long, lat);
     },
-		getMessages: function(user, callback){
-			getMessages(user, callback);
+		addPOI: function(source, dest, content, long, lat){
+      return addPOI(source, dest, content, long, lat);
+    },
+		getMessages: function(user, type, callback){
+			getMessages(user, type, callback);
 		},
 		addSubscription: function(name, key){
 			return addSubscription(name, key);
