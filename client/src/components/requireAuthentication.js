@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {pushState, replace} from 'redux-router';
 import { push } from 'react-router-redux'
+import { authenticateSilentGoogle } from './../actions/userActions'
 
 export function RequireAuthentication(Component) {
 
@@ -16,9 +17,10 @@ export function RequireAuthentication(Component) {
         }
 
         checkAuth (user) {
+            debugger;
             if (user.id === "") {
                 let redirectAfterLogin = this.props.location.pathname;
-                this.props.dispatch(push(`/login?next=${redirectAfterLogin}`))
+                this.props.dispatch(authenticateSilentGoogle(`/login?next=${redirectAfterLogin}`))
             }
         }
 

@@ -3,9 +3,10 @@ import ReactDOM from "react-dom"
 import { connect } from "react-redux"
 import { Router, Route, Link, hashHistory } from 'react-router'
 import { push } from 'react-router-redux'
-import { updateNewMessageValue, latestMessages, updateDest, newDest } from "../actions/messagesActions"
+import { updateNewMessageValue, latestMessages, latestPointOfInterest, updateDest, newDest, sendPio } from "../actions/messagesActions"
 import { addSubscription } from "../actions/subscriptionsActions"
-import { toggleSideMenu, setChannelJoinDialogState } from "../actions/applicationActions"
+import { setSideMenuShown, toggleSideMenu, setChannelJoinDialogState, setPokestopDialogShown, setGymDialogShown, setPokemonDialogShown, setSideMenuSwipeAble } from "../actions/applicationActions"
+import { changeMapCenter } from "../actions/mapActions"
 import {
 	Page,
 	Button,
@@ -26,6 +27,8 @@ import {
 	Dialog
 } from 'react-onsenui';
 import ons from 'onsenui';
+import Map from './../components/Map'
+import Flow from './Flow'
 
 import Navbar from "./../components/Navbar";
 
@@ -44,19 +47,29 @@ export default class ChatLayout extends React.Component {
 	hide() {
 		this.props.dispatch(toggleSideMenu())
 	}
+	toggleTabs(e){
+		if(e.index === 1){
+			this.refs.tabs.refs.map.componentDidResized();
+			this.props.setSideMenuSwipeAble(false);
+		}
+		else
+			this.props.setSideMenuSwipeAble(true);
+
+	}
 	render() {
 
-		const { user, messages, onMessageValueChange, toggleSideMenu,  children } = this.props;
+		const { application, user, messages, map, onMessageValueChange, setSideMenuShown, toggleSideMenu, children, toggleChannelJoinDialog } = this.props;
 		const { latestMessage } = messages;
 		return <Splitter>
 					<SplitterSide 	side='left'
 									collapse={true}
-									isOpen={this.props.application.sideMenuIsOpen}
-									onClose={this.props.toggleSideMenu.bind(this)}
-									isSwipeable={true}>
+									isOpen={application.sideMenuIsOpen}
+									onClose={() => setSideMenuShown(false)}
+									onOpen={() => setSideMenuShown(true)}
+									isSwipeable={application.sideMenuSwipeAble}>
 						<Page>
-							<Button onClick={this.props.toggleChannelJoinDialog.bind(this)} >Join/Create</Button>
-							<Dialog isOpen={this.props.application.channelJoinDialogIsOpen}
+							<Button onClick={toggleChannelJoinDialog.bind(this)} >Join/Create</Button>
+							<Dialog isOpen={application.channelJoinDialogIsOpen}
 									cancelable
 									onCancel={this.props.hideChannelJoinDialog.bind(this)}>
 
@@ -77,13 +90,43 @@ export default class ChatLayout extends React.Component {
 					<SplitterContent>
 						<Page>
 							<Navbar toggleSideMenu={toggleSideMenu.bind(this)} headerText="Messages" title="Messages" />
-							<ul className="tabs">
-								<li onClick={ () => { this.props.changeRoute("flow") }}>Chat</li>
-								<li disabled={ this.props.map.position != null } onClick={ () => { this.props.changeRoute("map") }} >Map</li>
-							</ul>
-							<div className="tabContent">
-								{ children }
-							</div>
+							<Tabbar
+								onPreChange={() => console.log('preChange')}
+								onPostChange={this.toggleTabs.bind(this)}
+								onReactive={() => console.log('onReactive')}
+								position='top'
+								initialIndex={0}
+								ref="tabs"
+								renderTabs={() => [{
+									content: <Page ref="chat" key="0" class="page tab"  >
+										<Flow 	sendMessage={this.sendMessage}
+												addSubscription={this.addSubscription}
+												onValueChange={onMessageValueChange}
+												messages={messages.messages}
+												latestMessage={latestMessage}
+												ref="chat" />
+										</Page>,
+									tab: <Tab key="0" label="Messages" icon="md-home" />
+									},{
+										content: <Page ref="mapCon" key="1" class="page tab">
+											<Map ref="map"
+												 changeMapCenter={this.props.changeMapCenter.bind(this)}
+												 setPokestopDialogShown={this.props.setPokestopDialogShown.bind(this)}
+												 setGymDialogShown={this.props.setGymDialogShown.bind(this)}
+												 setPokemonDialogShown={this.props.setPokemonDialogShown.bind(this)}
+												 isPokestopDialogShown={application.isPokestopDialogShown}
+												 isGymDialogShown={application.isGymDialogShown}
+												 isPokemonDialogShown={application.isPokemonDialogShown}
+												 sendPio={this.props.sendPio.bind(this)}
+												 pointOfInterests={messages.pointsOfInterest}
+												 position={map.position}
+
+
+												 style={this.style}></Map></Page>,
+										tab: <Tab key="1" label="Map" icon="md-settings" />
+									}]
+								}
+							/>
 						</Page>
 					</SplitterContent>
 				</Splitter>
@@ -114,10 +157,13 @@ function mapDispatchToProps(dispatch, ownProps, state) {
 		changeRoute: (route) => {
 			dispatch(push("/chat/" + route))
 		},
-		toggleSideMenu: function() {
-			console.log(this)
+		setSideMenuShown: function(shown) {
+			dispatch(setSideMenuShown(shown))
+		},
+		toggleSideMenu: function(){
 			dispatch(toggleSideMenu())
-		},toggleChannelJoinDialog(e) {
+		},
+		toggleChannelJoinDialog(e) {
 			if(this.props.application.channelJoinDialogIsOpen)
 				dispatch(setChannelJoinDialogState(false))
 			else
@@ -134,6 +180,25 @@ function mapDispatchToProps(dispatch, ownProps, state) {
 		toogleDest: function(subscription){
 			dispatch(updateDest(subscription));
 			dispatch(latestMessages(subscription));
+			dispatch(latestPointOfInterest(subscription));
+		},
+		changeMapCenter: function(coords){
+			dispatch(changeMapCenter(coords))
+		},
+		sendPio: function(content){
+			dispatch(sendPio(content, this.props.messages.latestMessage.dest));
+		},
+		setPokestopDialogShown: function(show){
+			dispatch(setPokestopDialogShown(show))
+		},
+		setGymDialogShown: function(show){
+			dispatch(setGymDialogShown(show))
+		},
+		setPokemonDialogShown: function(show){
+			dispatch(setPokemonDialogShown(show))
+		},
+		setSideMenuSwipeAble: function(swipeAble){
+			dispatch(setSideMenuSwipeAble(swipeAble))
 		}
 	};
 }

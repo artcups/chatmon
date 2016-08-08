@@ -1,73 +1,133 @@
-
-/*
- * Base Google Map example
- */
 import React, {PropTypes, Component} from 'react';
+import { GoogleMapLoader, GoogleMap, Marker } from "react-google-maps";
+import { triggerEvent } from "react-google-maps/lib/utils";
+import { default as canUseDOM } from "can-use-dom";
+import chatEnum from "../static/chat"
+import mindLogo from '../content/img/pokeball.png';
+import {
+    SpeedDial,
+    SpeedDialItem,
+    Fab,
+    Icon,
+    Dialog,
+    Button
+} from 'react-onsenui';
+import ons from 'onsenui';
 
-import GoogleMap from 'google-map-react';
+//components
+import PokestopDialog from '../components/dialogs/PokestopDialog';
+import GymDialog from '../components/dialogs/GymDialog';
+import PokemonDialog from '../components/dialogs/PokemonDialog';
 
-import MapIcon from './MapIcon.js';
-import shouldPureComponentUpdate from 'react-pure-render/function';
+export default class NewMap extends Component {
 
-
-export default class Map extends Component {
-    static propTypes = {
-        center: PropTypes.array,
-        zoom: PropTypes.number,
-        greatPlaceCoords: PropTypes.any,
-        onChildClick: PropTypes.func,
-    };
-    static defaultProps = {
-        center: [59.485951, 17.8539388],
-        zoom: 11,
-        greatPlaceCoords: {lat: 59.3963944, lng: 17.8515504}
-    };
-
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
+        //this.handleWindowResize = _.throttle(::this.handleWindowResize, 500);
     }
-    _onChildClick = (key, childProps) => {
-        const markerId = childProps.marker.get('id');
-        const index = this.props.markers.findIndex(m => m.get('id') === markerId);
-        if (this.props.onChildClick) {
-            this.props.onChildClick(index);
+
+    componentDidMount() {
+        if (!canUseDOM) {
+            return;
         }
+        window.addEventListener(`resize`, this.handleWindowResize.bind(this));
     }
-    resize(a, d) {
-        debugger;
-        if(typeof google !== 'undefined') {
-            let map = this.refs.googleMaps.map_;
-            google.maps.event.trigger(map, 'resize');
-            map.setZoom(map.getZoom());
 
+    componentWillUnmount() {
+        if (!canUseDOM) {
+            return;
         }
+        window.removeEventListener(`resize`, this.handleWindowResize.bind(this));
     }
-    shouldComponentUpdate = shouldPureComponentUpdate;
-    //_onClick = ({x, y, lat, lng, event}) => console.log(x, y, lat, lng, event)
+
+    handleWindowResize() {
+        console.log(`handleWindowResize`, this.googleMapRef_);
+        triggerEvent(this.googleMapRef_, `resize`);
+        this.props.changeMapCenter({latitude: this.props.position.latitude + 0.00000001, longitude: this.props.position.longitude + 0.00000001})
+    }
+    componentDidResized () {
+        let map = this.googleMapRef_;
+        triggerEvent(map, "resize");
+        this.props.changeMapCenter({latitude: this.props.position.latitude + 0.00000001, longitude: this.props.position.longitude + 0.00000001})
+    }
+    triggerEvent (component, ...args) {
+        const instance = null /* some magic to get Google Maps instance from react-google-maps component */;
+        return maps.event.trigger(instance, ...args);
+
+    }
     render() {
+        const { position, pointOfInterests, setPokestopDialogShown, setGymDialogShown, setPokemonDialogShown, isPokestopDialogShown, isGymDialogShown, isPokemonDialogShown, sendPio} = this.props;
+        const Cords = pointOfInterests.map((poi, index) => {
+            let content = poi.content.split("|");
 
-        const Cords = [
-                {title: "Title", lat: 59.34541678, lng: 18.1822184},
-                {title: "Title", lat: 59.36392828, lng: 18.05248107},
-                {title: "Title", lat: 59.29262043, lng: 18.09982699},
-                {title: "Title", lat: 59.37168456, lng: 17.94860701},
-                {title: "Title", lat: 59.32854157, lng: 18.14709156},
-                {title: "Title", lat: 59.3655718, lng: 17.98080168},
-                {title: "Title", lat: 59.37156078, lng: 18.06419743},
-                {title: "Title", lat: 59.28866218, lng: 18.00586609},
-                {title: "Title", lat: 59.24203335, lng: 18.03614352},
-                {title: "Title", lat: 59.2657605, lng: 18.09346632}
-                    ].map((cord, i) => <MapIcon key={i} lat={cord.lat} lng={cord.lng} onClick={this._onClick} />);
-        //const Cords = this.props.markers.latestMessage.pointsOfInterest.content.map((cord, i) => <MapIcon key={i} lat={cord.lat} lng={cord.lng} onClick={this._onClick} />);
-        const key = "AIzaSyAMUqHJyxbFqkQbdYEizz_TNGZ_mUcAujw";
-        return (<GoogleMap
-                    bootstrapURLKeys={{key: key}} // set if you need stats etc ...
-                    center={this.props.center}
-                    zoom={this.props.zoom}>
-                    {Cords}
-                    <MapIcon lat={59.326633} lng={18.071737} text={'A'} /* Kreyser Avrora */ />
-                    <MapIcon {...this.props.greatPlaceCoords} text={'B'} /* road circle */ />
-                </GoogleMap>
+            let pokemonImg = "";
+            if(content[0] === chatEnum.pointOfInterest.type.GYM)
+                console.log("1")
+            else if(content[0] === chatEnum.pointOfInterest.type.POKESTOP)
+                console.log("2")
+            else if(content[0] === chatEnum.pointOfInterest.type.POKEMON){
+                pokemonImg = chatEnum.pointOfInterest.pokemonImages[content[1]];
+            }
+
+            let img = pokemonImg == "" ? mindLogo : pokemonImg;
+            return {position: { lat: poi.lat,  lng: poi.lng }, key: index, icon:{
+                        size: new google.maps.Size(30, 30),
+                        scaledSize: new google.maps.Size(30, 30),
+                        url: img
+                    }}
+        })
+
+        return (<div>
+                <GymDialog
+                    setGymDialogShown={setGymDialogShown}
+                    isGymDialogShown={isGymDialogShown}
+                />
+                <PokestopDialog
+                    setPokestopDialogShown={setPokestopDialogShown}
+                    isPokestopDialogShown={isPokestopDialogShown}
+                />
+                <PokemonDialog
+                    setPokemonDialogShown={setPokemonDialogShown}
+                    isPokemonDialogShown={isPokemonDialogShown}
+                />
+
+
+                <GoogleMapLoader
+                    containerElement={
+                  <div
+                    style={{
+                      height: `100%`,
+                    }}
+                  />
+                }
+                    googleMapElement={
+          <GoogleMap
+                    ref={r => this.googleMapRef_ = r}
+                    defaultZoom={11}
+                    options={{
+                        disableDefaultUI: true
+                    }}
+                    center={{lat: position.latitude, lng: position.longitude}} >
+            {Cords.map((marker, index) => {
+              return (
+                <Marker
+                  {...marker}
+                />
+              );
+            })}
+          </GoogleMap>
+        }
+                />
+            <SpeedDial disabled={false} direction='up' onClick={() => console.log('test1')} position='right bottom'>
+                <Fab>
+                    <Icon icon='fa-globe' fixedWidth={false} style={{verticalAlign: 'middle'}} />
+                </Fab>
+                <SpeedDialItem onClick={() => ons.notification.confirm({message: "Are you sure you want to place a gym at your location?", cancelable: true, callback: () => sendPio(chatEnum.pointOfInterest.type.GYM + "|-1"), title: "Gym location"})}> <Icon icon='fa-globe' fixedWidth={false} style={{verticalAlign: 'middle'}} /> </SpeedDialItem>
+                <SpeedDialItem onClick={() => ons.notification.confirm({message: "Are you sure you want to place a pokestop at your location?", cancelable: true, callback: () => sendPio(chatEnum.pointOfInterest.type.POKESTOP + "|-1"), title: "Pokestop location"})}> <Icon icon='fa-globe' fixedWidth={false} style={{verticalAlign: 'middle'}} /> </SpeedDialItem>
+                <SpeedDialItem onClick={() => setPokemonDialogShown(true)}> <Icon icon='fa-globe' fixedWidth={false} style={{verticalAlign: 'middle'}} /> </SpeedDialItem>
+            </SpeedDial>
+            </div>
+
         );
     }
 }

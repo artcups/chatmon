@@ -1,4 +1,5 @@
-import types from "../actions/types";
+import types from "../static/types";
+import {REHYDRATE} from 'redux-persist/constants'
 
 export default function reducer(state={
     user: {
@@ -21,6 +22,12 @@ export default function reducer(state={
 
   }, action) {
     switch (action.type) {
+        case "dasd": {
+            debugger;
+            var incoming = action.payload.user
+            if (incoming) return {...state, ...incoming}
+            return state
+        }
         case types.user.SET_USER: {
             return {...state, user: action.data}
         }

@@ -1,4 +1,5 @@
-import types from "./types";
+import types from "../static/types";
+import { push } from 'react-router-redux'
 
 
 export function fetchUser() {
@@ -46,5 +47,26 @@ export function authenticateGoogle(){
               alert('error: ' + msg);
             }
         );
+  }
+}
+export function authenticateSilentGoogle(redirect){
+    return function(dispatch) {
+        if(window.plugins != undefined && window.plugins.googleplus != undefined){
+            dispatch({type: types.user.INIT_LOGIN})
+            window.plugins.googleplus.trySilentLogin(
+                {
+                    'scopes': 'email openid profile', // optional - space-separated list of scopes, If not included or empty, defaults to `profile` and `email`.
+                    'webClientId': '1012200602922-lb4cd19omjm7ku7jijef0dvf7pnhgdff.apps.googleusercontent.com', // optional - clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
+                    'offline': true, // Optional, but requires the webClientId - if set to true the plugin will also return a serverAuthCode, which can be used to grant offline access to a non-Google server
+                },
+                function (res) {
+                    dispatch({type: types.server.AUTHENTICATE_USER, data: {token: res.idToken, email: res.email}})
+                },
+                function (msg) {
+                    dispatch(push(`/login?next=${redirectAfterLogin}`))
+                }
+            );
+        }
+
   }
 }

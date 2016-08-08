@@ -1,5 +1,5 @@
 
-import types from "./types"
+import types from "../static/types"
 export function sendMessage(content, dest){
 	return function(dispatch) {
 		//Google login window.nånting nånting then action boom
@@ -38,6 +38,9 @@ export function updateNewMessageValue(text){
 }
 export function latestMessages(dest){
 	return { type: types.server.GET_MESSAGES, data: dest}
+}
+export function latestPointOfInterest(dest){
+	return { type: types.server.GET_POI, data: dest}
 }
 export function updateDest(dest) {
 	return {

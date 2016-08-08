@@ -1,4 +1,4 @@
-import types from "../actions/types"
+import types from "../static/types"
 
 export default function reducer(state={
 	position: {
@@ -19,6 +19,9 @@ export default function reducer(state={
 			}
 			case types.map.FETCH_POSITION_FETCHING:{
 				return { ...state, status: 1, statusMessage: "" }
+			}
+			case types.map.CHANGE_MAP_CENTER:{
+				return { ...state, position: action.data}
 			}
 		}
 		return state

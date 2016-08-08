@@ -31,14 +31,15 @@ export default class Map extends Component {
 			this.props.onChildClick(index);
 		}
 	}
-	resize(a, d) {
-		debugger;
-		if(typeof google !== 'undefined') {
-			let map = this.refs.googleMaps.map_;
-			google.maps.event.trigger(map, 'resize');
-			map.setZoom(map.getZoom());
-
-		}
+	refresh() {
+		this.googleMapRef_._setViewSize();
+		// mb will work without changing center
+		this.setState({
+			center: {
+				lat: this.state.center.lat + 0.000000001,
+				lng: this.state.center.lng + 0.000000001,
+			},
+		});
 	}
 	shouldComponentUpdate = shouldPureComponentUpdate;
 	//_onClick = ({x, y, lat, lng, event}) => console.log(x, y, lat, lng, event)
@@ -62,9 +63,11 @@ export default class Map extends Component {
 
 		//const Cords = this.props.markers.latestMessage.pointsOfInterest.content.map((cord, i) => <MapIcon key={i} lat={cord.lat} lng={cord.lng} onClick={this._onClick} />);
 		return <GoogleMap
+			ref="googleMap"
 			bootstrapURLKeys={{key: key}} // set if you need stats etc ...
 			center={[this.props.map.position.latitude, this.props.map.position.longitude]}
-			zoom={this.props.zoom}>
+			zoom={this.props.zoom}
+			>
 			{Cords}
 			<MapIcon lat={59.326633} lng={18.071737} text={'A'} /* Kreyser Avrora */ />
 			<MapIcon {...this.props.greatPlaceCoords} text={'B'} /* road circle */ />

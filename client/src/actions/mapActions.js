@@ -1,4 +1,4 @@
-import types from "./types"
+import types from "../static/types"
 
 
 export function fetchPosition() {
@@ -16,4 +16,7 @@ export function fetchPosition() {
         dispatch({type: types.map.FETCH_POSITION_ERROR, data: error.message})
       }, { timeout: 5000, enableHighAccuracy: true })
   }
+}
+export function changeMapCenter(coords){
+    return {type: types.map.CHANGE_MAP_CENTER, data: coords}
 }
