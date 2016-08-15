@@ -1,0 +1,33 @@
+.inline-form {
+	ons-col {
+		text-align: left;
+	}
+	label {
+		height: 40px;
+		line-height: 40px;
+	}
+
+}
+select{
+	&.default {
+		color: inherit;
+		font: inherit;
+		line-height: initial;
+		direction: rtl;
+		overflow: hidden;
+		height: 40px;
+		width: 100%;
+		padding: 5px 8px;
+		border: none;
+		box-shadow: none;
+		background-color: transparent;
+		background-image: none;
+		appearance: none;
+		option {
+			direction: initial;
+		}
+	}
+	&.android{
+
+	}
+}
