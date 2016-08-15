@@ -73,7 +73,7 @@ export default class NewMap extends Component {
             return {position: { lat: poi.lat,  lng: poi.lng }, key: index, icon:{
                         size: new google.maps.Size(30, 30),
                         scaledSize: new google.maps.Size(30, 30),
-                        url: img
+                        url: "data:image/png;base64,"+img
                     }}
         })
 
