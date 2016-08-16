@@ -30,7 +30,7 @@ export default class PokemonDialog extends React.Component{
                     <Row className="inline-form">
                         <Col width="32"><label>Pokemon</label></Col>
                         <Col width="68">
-                            <select className={ons.platform.isAndroid() ? "android" : "default"}>
+                            <select className={ons.platform.isAndroid() ? "android text-input--material" : "default"}>
                                 <option disabled="true" selected key="-1" value="0">Choose pokemon</option>
                                 {options}
                             </select>
