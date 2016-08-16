@@ -16,7 +16,7 @@ export function sendMessage(content, dest){
 			}, { timeout: 5000, enableHighAccuracy: true })
 	}
 }
-export function sendPio(content, dest){
+export function sendPoi(content, dest){
 	return { type: types.server.SEND_PIO, data: {content, lat: 59.326633, long: 18.071737, dest}}
 	/*return function(dispatch) {
 		//Google login window.nånting nånting then action boom

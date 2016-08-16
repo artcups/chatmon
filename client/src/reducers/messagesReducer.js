@@ -31,6 +31,12 @@ export default function reducer(state={
 				name: "root"
 			}
 		},
+		newPoi: {
+			content: "",
+			dest: {
+				name: "root"
+			}
+		},
 		newDest: {
 			name: "",
 			key: ""
@@ -50,9 +56,6 @@ export default function reducer(state={
 			case types.message.LATEST_MESSAGES:{
 				console.log(action.data)
 				return { ...state, messages: action.data }
-			}
-			case types.message.UPDATE_DEST: {
-				return { ...state, latestMessage: {...state.latestMessage, dest: action.data}}
 			}
 			case types.message.NEW_DEST: {
 				return { ...state, newDest: action.data}

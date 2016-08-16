@@ -42,12 +42,12 @@ export default class ChatLayout extends React.Component {
 	}
 	sendMessage(){
 		debugger;
-		this.props.dispatch(sendMessage(this.props.messages.latestMessage.content, this.props.messages.latestMessage.dest));
+		this.props.dispatch(sendMessage(this.props.messages.latestMessage.content, this.props.application.dest));
 		this.props.dispatch(updateNewMessageValue(""));
 	}
 	sendPio(){
 		debugger;
-		this.props.dispatch(sendPio(this.props.messages.latestMessage.content, this.props.messages.latestMessage.dest));
+		this.props.dispatch(sendPio(this.props.messages.latestMessage.content, this.props.application.dest));
 		this.props.dispatch(updateNewMessageValue(""));
 	}
 	addSubscription(){

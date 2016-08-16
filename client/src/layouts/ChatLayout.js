@@ -3,7 +3,7 @@ import ReactDOM from "react-dom"
 import { connect } from "react-redux"
 import { Router, Route, Link, hashHistory } from 'react-router'
 import { push } from 'react-router-redux'
-import { updateNewMessageValue, latestMessages, latestPointOfInterest, updateDest, newDest, sendPio } from "../actions/messagesActions"
+import { updateNewMessageValue, latestMessages, latestPointOfInterest, updateDest, newDest, sendPoi } from "../actions/messagesActions"
 import { addSubscription } from "../actions/subscriptionsActions"
 import { setSideMenuShown, toggleSideMenu, setChannelJoinDialogState, setPokestopDialogShown, setGymDialogShown, setPokemonDialogShown, setSideMenuSwipeAble } from "../actions/applicationActions"
 import { changeMapCenter } from "../actions/mapActions"
@@ -84,7 +84,7 @@ export default class ChatLayout extends React.Component {
 								</Button>
 							</Dialog>
 							<List 	dataSource={user.subscriptions}
-									renderRow={(subscription) => ( <ListItem key={subscription._id} onClick={() => this.props.toogleDest(subscription)} tappable>{subscription.name}</ListItem> )} />
+									renderRow={(subscription) => ( <ListItem className={this.props.application.dest._id == subscription._id ? "active" : ""} key={subscription._id} onClick={() => this.props.toogleDest(subscription)} tappable>{subscription.name}</ListItem> )} />
 						</Page>
 					</SplitterSide>
 					<SplitterContent>
@@ -111,13 +111,11 @@ export default class ChatLayout extends React.Component {
 										content: <Page ref="mapCon" key="1" class="page tab">
 											<Map ref="map"
 												 changeMapCenter={this.props.changeMapCenter.bind(this)}
-												 setPokestopDialogShown={this.props.setPokestopDialogShown.bind(this)}
-												 setGymDialogShown={this.props.setGymDialogShown.bind(this)}
 												 setPokemonDialogShown={this.props.setPokemonDialogShown.bind(this)}
 												 isPokestopDialogShown={application.isPokestopDialogShown}
 												 isGymDialogShown={application.isGymDialogShown}
 												 isPokemonDialogShown={application.isPokemonDialogShown}
-												 sendPio={this.props.sendPio.bind(this)}
+												 sendPoi={this.props.sendPoi.bind(this)}
 												 pointOfInterests={messages.pointsOfInterest}
 												 position={map.position}
 
@@ -185,8 +183,8 @@ function mapDispatchToProps(dispatch, ownProps, state) {
 		changeMapCenter: function(coords){
 			dispatch(changeMapCenter(coords))
 		},
-		sendPio: function(content){
-			dispatch(sendPio(content, this.props.messages.latestMessage.dest));
+		sendPoi: function(content){
+			dispatch(sendPoi(content, this.props.application.dest));
 		},
 		setPokestopDialogShown: function(show){
 			dispatch(setPokestopDialogShown(show))

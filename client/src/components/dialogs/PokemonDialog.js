@@ -11,8 +11,17 @@ import chatEnum from "../../static/chat"
 
 export default class PokemonDialog extends React.Component{
 
+    okClick(){
+        this.props.sendPoi(chatEnum.pointOfInterest.type.POKEMON+"|"+this.refs.pokemon.value);
+        this.refs.pokemon.value = 0;
+        this.props.setPokemonDialogShown(false);
+    }
+    cancelClick(){
+        this.props.setPokemonDialogShown(false);
+        this.refs.pokemon.value = 0;
+    }
     render(){
-        const { setPokemonDialogShown, isPokemonDialogShown } = this.props;
+        const { setPokemonDialogShown, isPokemonDialogShown, sendPoi } = this.props;
         const options = Object.keys(chatEnum.pointOfInterest.pokemonDisplay).map((pokemon, index) => {
             return <option key={index} value={pokemon}>{chatEnum.pointOfInterest.pokemonDisplay[pokemon]}</option>;
         });
@@ -30,7 +39,7 @@ export default class PokemonDialog extends React.Component{
                     <Row className="inline-form">
                         <Col width="32"><label>Pokemon</label></Col>
                         <Col width="68">
-                            <select className={ons.platform.isAndroid() ? "android text-input--material" : "default"}>
+                            <select ref="pokemon" className={ons.platform.isAndroid() ? "android text-input--material" : "default"}>
                                 <option disabled="true" selected key="-1" value="0">Choose pokemon</option>
                                 {options}
                             </select>
@@ -38,8 +47,8 @@ export default class PokemonDialog extends React.Component{
                     </Row>
                 </div>
                 <div className={isAndroid ? "alert-dialog-footer alert-dialog-footer--one alert-dialog-footer--material alert-dialog-footer--one--material" : "alert-dialog-footer alert-dialog-footer--one" }>
-                    <button className={isAndroid ? "alert-dialog-button alert-dialog-button--one alert-dialog-button--material alert-dialog-button--one--material" : "alert-dialog-button alert-dialog-button--one" }>Cancel</button>
-                    <button className={isAndroid ? "alert-dialog-button alert-dialog-button--primal alert-dialog-button--one alert-dialog-button--material alert-dialog-button--one--material alert-dialog-button--primal--material" : "alert-dialog-button alert-dialog-button--primal alert-dialog-button--one" }>OK</button>
+                    <button onClick={() => this.cancelClick()} className={isAndroid ? "alert-dialog-button alert-dialog-button--one alert-dialog-button--material alert-dialog-button--one--material" : "alert-dialog-button alert-dialog-button--one" }>Cancel</button>
+                    <button onClick={() => this.okClick()} className={isAndroid ? "alert-dialog-button alert-dialog-button--primal alert-dialog-button--one alert-dialog-button--material alert-dialog-button--one--material alert-dialog-button--primal--material" : "alert-dialog-button alert-dialog-button--primal alert-dialog-button--one" }>OK</button>
                 </div>
 
             </div>

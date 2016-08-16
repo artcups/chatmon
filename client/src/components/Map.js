@@ -56,7 +56,7 @@ export default class NewMap extends Component {
 
     }
     render() {
-        const { position, pointOfInterests, setPokestopDialogShown, setGymDialogShown, setPokemonDialogShown, isPokestopDialogShown, isGymDialogShown, isPokemonDialogShown, sendPio} = this.props;
+        const { position, pointOfInterests, setPokestopDialogShown, setGymDialogShown, setPokemonDialogShown, isPokestopDialogShown, isGymDialogShown, isPokemonDialogShown, sendPoi} = this.props;
         const Cords = pointOfInterests.map((poi, index) => {
             let content = poi.content.split("|");
 
@@ -78,17 +78,10 @@ export default class NewMap extends Component {
         })
 
         return (<div>
-                <GymDialog
-                    setGymDialogShown={setGymDialogShown}
-                    isGymDialogShown={isGymDialogShown}
-                />
-                <PokestopDialog
-                    setPokestopDialogShown={setPokestopDialogShown}
-                    isPokestopDialogShown={isPokestopDialogShown}
-                />
                 <PokemonDialog
                     setPokemonDialogShown={setPokemonDialogShown}
                     isPokemonDialogShown={isPokemonDialogShown}
+                    sendPoi={sendPoi}
                 />
 
 
@@ -122,9 +115,9 @@ export default class NewMap extends Component {
                 <Fab>
                     <Icon icon='fa-globe' fixedWidth={false} style={{verticalAlign: 'middle'}} />
                 </Fab>
-                <SpeedDialItem onClick={() => ons.notification.confirm({message: "Are you sure you want to place a gym at your location?", cancelable: true, callback: () => sendPio(chatEnum.pointOfInterest.type.GYM + "|-1"), title: "Gym location"})}> <Icon icon='fa-globe' fixedWidth={false} style={{verticalAlign: 'middle'}} /> </SpeedDialItem>
-                <SpeedDialItem onClick={() => ons.notification.confirm({message: "Are you sure you want to place a pokestop at your location?", cancelable: true, callback: () => sendPio(chatEnum.pointOfInterest.type.POKESTOP + "|-1"), title: "Pokestop location"})}> <Icon icon='fa-globe' fixedWidth={false} style={{verticalAlign: 'middle'}} /> </SpeedDialItem>
-                <SpeedDialItem onClick={() => setPokemonDialogShown(true)}> <Icon icon='fa-globe' fixedWidth={false} style={{verticalAlign: 'middle'}} /> </SpeedDialItem>
+                <SpeedDialItem onClick={() => ons.notification.confirm({message: "Are you sure you want to place a gym at your location?", cancelable: true, callback: () => sendPoi(chatEnum.pointOfInterest.type.GYM + "|-1"), title: "Gym location"})}> <Icon icon='fa-globe' fixedWidth={false} style={{verticalAlign: 'middle'}} /> </SpeedDialItem>
+                <SpeedDialItem onClick={() => ons.notification.confirm({message: "Are you sure you want to place a pokestop at your location?", cancelable: true, callback: () => sendPoi(chatEnum.pointOfInterest.type.POKESTOP + "|-1"), title: "Pokestop location"})}> <Icon icon='fa-globe' fixedWidth={false} style={{verticalAlign: 'middle'}} /> </SpeedDialItem>
+                <SpeedDialItem onClick={() => setPokemonDialogShown(true)}> <Icon icon='fa-globe' fixedWidth={false} style={{verticalAlign: 'middle'}}/> </SpeedDialItem>
             </SpeedDial>
             </div>
 
