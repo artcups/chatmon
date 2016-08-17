@@ -5,6 +5,9 @@ var webpack = require('webpack');
 var precss = require('precss');
 var autoprefixer = require('autoprefixer');
 var path = require('path');
+var config = {
+  iconPath: 'node_modules/react-icons'
+};
 
 module.exports = {
 
@@ -25,6 +28,7 @@ module.exports = {
         exclude: /vendor/,
         loader: "style!css!postcss!sass"
       },
+
       {
         test: /\.(png|woff|woff2|eot|ttf|svg|jpg)$/,
         loader: 'url?limit=10000&name=assets/[name].[ext]' },

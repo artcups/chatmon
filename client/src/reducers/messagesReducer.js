@@ -26,7 +26,7 @@ export default function reducer(state={
 		],
 
 		latestMessage: {
-			content: "Latest message 123",
+			content: "",
 			dest: {
 				name: "root"
 			}
