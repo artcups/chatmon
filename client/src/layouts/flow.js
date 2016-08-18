@@ -23,10 +23,11 @@ import {
 	Tabbar,
 	Tab,
 	TabPage,
-	Dialog
+	Dialog,
+	Ripple
 } from 'react-onsenui';
 import ons from 'onsenui';
-
+import TiWeatherWindy from 'react-icons/lib/ti/weather-windy';
 import FilteredMessageList from "./../components/FilteredMessageList";
 
 
@@ -40,11 +41,7 @@ export default class ChatLayout extends React.Component {
 			height: "100"
 		}
 	}
-	sendMessage(){
-		debugger;
-		this.props.dispatch(sendMessage(this.props.messages.latestMessage.content, this.props.application.dest));
-		this.props.dispatch(updateNewMessageValue(""));
-	}
+
 	sendPio(){
 		debugger;
 		this.props.dispatch(sendPio(this.props.messages.latestMessage.content, this.props.application.dest));
@@ -59,18 +56,18 @@ export default class ChatLayout extends React.Component {
 		const { user, messages, onMessageValueChange } = this.props;
 		const { latestMessage } = messages;
 		return <div>
-			<Button ripple onClick={ this.sendMessage.bind(this) }>New messages!</Button>
-			<Button ripple onClick={ this.sendPio.bind(this) }>New pio!</Button>
-			<Button ripple onClick={ this.addSubscription.bind(this) }>Lägg till ny kanal!</Button>
-			<FilteredMessageList onValueChange={onMessageValueChange} messages={messages.messages} />
+			<div className="messages">
+				<FilteredMessageList onValueChange={onMessageValueChange} messages={messages.messages} />
+			</div>
+			<div className="newMessage">
+				<Input
+					class="input"
+					value={latestMessage.content}
+					placeholder="Say something..."
+					type="text"
+					onChange={ onMessageValueChange.bind(this) } />
 
-			<div><ons-row verticalAlign="bottom">
-				<Input	value={latestMessage.content}
-						  placeholder="Say something..."
-						  modifier="material"
-						  type="text"
-						  onChange={ onMessageValueChange.bind(this) } />
-			</ons-row>
+				<div className="sendBtn" onClick={ this.props.sendMessage.bind(this) }><TiWeatherWindy color="#4384cd" size={30} /><Ripple color='rgba(109, 109, 109, 0.3)' /></div>
 			</div>
 		</div>
 	}
@@ -89,6 +86,11 @@ function mapDispatchToProps(dispatch) {
 	return {
 		onMessageValueChange: (e) => {
 			dispatch(updateNewMessageValue(e.target.value))
+		},
+		sendMessage: function(){
+			debugger;
+			dispatch(sendMessage(this.props.messages.latestMessage.content, this.props.application.dest));
+			dispatch(updateNewMessageValue(""));
 		}
 	};
 }

@@ -179,7 +179,6 @@ function mapDispatchToProps(dispatch, ownProps, state) {
 			debugger;
 			dispatch(addSubscription(this.props.messages.newDest.name, this.props.messages.newDest.key));
 		},
-
 		toogleDest: function(subscription){
 			dispatch(updateDest(subscription));
 			dispatch(latestMessages(subscription));
