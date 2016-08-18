@@ -5,7 +5,7 @@ import { Router, Route, Link, hashHistory } from 'react-router'
 import { push } from 'react-router-redux'
 import { updateNewMessageValue, latestMessages, latestPointOfInterest, updateDest, newDest, sendPoi } from "../actions/messagesActions"
 import { addSubscription } from "../actions/subscriptionsActions"
-import { setSideMenuShown, toggleSideMenu, setChannelJoinDialogState, setPokestopDialogShown, setGymDialogShown, setPokemonDialogShown, setSideMenuSwipeAble } from "../actions/applicationActions"
+import { setSideMenuShown, toggleSideMenu, setChannelJoinDialogShown, setPokestopDialogShown, setGymDialogShown, setPokemonDialogShown, setSideMenuSwipeAble } from "../actions/applicationActions"
 import { changeMapCenter } from "../actions/mapActions"
 import {
 	Page,
@@ -29,6 +29,7 @@ import {
 import ons from 'onsenui';
 import Map from './../components/Map'
 import Flow from './Flow'
+import ChannelJoinDialog from '../components/dialogs/ChannelJoinDialog';
 
 import Navbar from "./../components/Navbar";
 
@@ -58,7 +59,7 @@ export default class ChatLayout extends React.Component {
 	}
 	render() {
 
-		const { application, user, messages, map, onMessageValueChange, setSideMenuShown, toggleSideMenu, children, toggleChannelJoinDialog } = this.props;
+		const { application, user, messages, map, onMessageValueChange, setSideMenuShown, toggleSideMenu, children, toggleChannelJoinDialog, setChannelJoinDialogShown, addSubscription, onChannelNameAndPasswordChange } = this.props;
 		const { latestMessage } = messages;
 		return <Splitter>
 					<SplitterSide 	side='left'
@@ -69,20 +70,16 @@ export default class ChatLayout extends React.Component {
 									isSwipeable={application.sideMenuSwipeAble}>
 						<Page>
 							<Button onClick={toggleChannelJoinDialog.bind(this)} >Join/Create</Button>
-							<Dialog isOpen={application.channelJoinDialogIsOpen}
-									cancelable
-									onCancel={this.props.hideChannelJoinDialog.bind(this)}>
 
-								<label>Channel name:</label><br/>
-								<Input id="channelNameValue" onChange={this.props.onChannelNameValueChange.bind(this)}/>
-								<br/><label>Channel password:</label><br/>
-									<Input id="channelPasswordValue" onChange={this.props.onChannelPasswordValueChange.bind(this)}/><br/>
+							<ChannelJoinDialog
+								channelJoinDialogIsShown={application.channelJoinDialogIsShown}
+								setChannelJoinDialogShown={setChannelJoinDialogShown.bind(this)}
+								addSubscription={addSubscription.bind(this)}
+								onChannelNameAndPasswordChange={onChannelNameAndPasswordChange.bind(this)}
 
-								<Button>Join/Create</Button>
-								<Button onClick={this.props.hideChannelJoinDialog.bind(this)}>
-									Close
-								</Button>
-							</Dialog>
+							/>
+
+
 							<List 	dataSource={user.subscriptions}
 									renderRow={(subscription) => ( <ListItem className={this.props.application.dest._id == subscription._id ? "active" : ""} key={subscription._id} onClick={() => this.props.toogleDest(subscription)} tappable>{subscription.name}</ListItem> )} />
 						</Page>
@@ -146,11 +143,15 @@ function mapDispatchToProps(dispatch, ownProps, state) {
 		onMessageValueChange: (e) => {
 			dispatch(updateNewMessageValue(e.target.value))
 		},
-		onChannelNameValueChange: (e) => {
-			dispatch(newDest(e.target.value, document.getElementById("channelPasswordValue").value))
+
+		onChannelNameAndPasswordChange:(name, key) => {
+			dispatch(newDest(name, key))
+		},
+		onChannelNameValueChange: (name) => {
+			dispatch(newDestValue(e.target.value, document.getElementById("channelPasswordValue").value))
 		},
 		onChannelPasswordValueChange: (e) => {
-			dispatch(newDest(document.getElementById("channelNameValue").value, e.target.value))
+			dispatch(newDestValue(document.getElementById("channelNameValue").value, e.target.value))
 		},
 		changeRoute: (route) => {
 			dispatch(push("/chat/" + route))
@@ -161,18 +162,22 @@ function mapDispatchToProps(dispatch, ownProps, state) {
 		toggleSideMenu: function(){
 			dispatch(toggleSideMenu())
 		},
+		setChannelJoinDialogShown: function(show){
+			dispatch(setChannelJoinDialogShown(show))
+		},
+
 		toggleChannelJoinDialog(e) {
-			if(this.props.application.channelJoinDialogIsOpen)
-				dispatch(setChannelJoinDialogState(false))
+			if(this.props.application.channelJoinDialogIsShown)
+				dispatch(setChannelJoinDialogShown(false))
 			else
-				dispatch(setChannelJoinDialogState(true))
+				dispatch(setChannelJoinDialogShown(true))
 		},
 		hideChannelJoinDialog: function() {
 			dispatch(setChannelJoinDialogState(false))
 		},
 		addSubscription: function(){
-			dispatch(addSubscription(this.props.messages.latestMessage.content));
-			dispatch(updateNewMessageValue(""));
+			debugger;
+			dispatch(addSubscription(this.props.messages.newDest.name, this.props.messages.newDest.key));
 		},
 
 		toogleDest: function(subscription){

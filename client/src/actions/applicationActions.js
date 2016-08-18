@@ -5,7 +5,7 @@ export function toggleSideMenu(){
 export function setSideMenuShown(shown){
     return { type: types.application.SET_SIDE_MENU_SHOWN, data: shown}
 }
-export function setChannelJoinDialogState(isOpen){
+export function setChannelJoinDialogShown(isOpen){
     return { type: types.application.SET_CHANNELJOINDIALOG, data: isOpen}
 }
 export function setPokestopDialogShown(isShown){

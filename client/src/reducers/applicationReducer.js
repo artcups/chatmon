@@ -23,7 +23,7 @@ export default function reducer(state={
 			return { ...state, sideMenuIsOpen: action.data}
 		}
 		case types.application.SET_CHANNELJOINDIALOG: {
-			return { ...state, channelJoinDialogIsOpen: action.data}
+			return { ...state, channelJoinDialogIsShown: action.data}
 		}
 		case types.application.SET_POKESTOP_DIALOG_SHOWN: {
 			return { ...state, isPokestopDialogShown: action.data}
