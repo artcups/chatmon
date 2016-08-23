@@ -29,8 +29,11 @@
 					color: red;
 					font-weight: 700;
 				}
-				.chatText {
+				.chatText, .chatContent {
 					margin: 0;
+				}
+				.chatContent{
+					padding-top: 2px;
 				}
 			}
 

@@ -55,12 +55,12 @@ export default class ChatLayout extends React.Component {
 
 		const { user, messages, onMessageValueChange } = this.props;
 		const { latestMessage } = messages;
-		return <div>
+		return <div className="messageContainer">
 			<div className="messages">
 				<FilteredMessageList onValueChange={onMessageValueChange} messages={messages.messages} />
 			</div>
 			<div className="newMessage">
-				<Input
+				<textarea
 					class="input"
 					value={latestMessage.content}
 					placeholder="Say something..."

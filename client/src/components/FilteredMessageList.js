@@ -22,7 +22,8 @@ export default class FilteredMessageList extends React.Component {
 			return <li key={message._id} className="chatRow" ref="lastRow">
 				<div className="left avatar"><img src={pokeball} /></div>
 				<div className="center chatMessage">
-					<p className="chatText">[{date.getHours()}:{date.getMinutes()}] <label className="userName">{message.source.userName} </label>{message.content}</p>
+					<p className="chatText"><label className="userName">{message.source.userName}</label> {date.getHours()}:{date.getMinutes()}</p>
+					<p className="chatContent">{message.content}</p>
 				</div>
 			</li>
 		})

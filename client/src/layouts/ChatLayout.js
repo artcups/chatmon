@@ -69,7 +69,7 @@ export default class ChatLayout extends React.Component {
 									onOpen={() => setSideMenuShown(true)}
 									isSwipeable={application.sideMenuSwipeAble}>
 						<Page>
-							<Button onClick={toggleChannelJoinDialog.bind(this)} >Join/Create</Button>
+
 
 							<ChannelJoinDialog
 								channelJoinDialogIsShown={application.channelJoinDialogIsShown}
@@ -81,7 +81,8 @@ export default class ChatLayout extends React.Component {
 
 
 							<List 	dataSource={user.subscriptions}
-									renderRow={(subscription) => ( <ListItem className={this.props.application.dest._id == subscription._id ? "active" : ""} key={subscription._id} onClick={() => this.props.toogleDest(subscription)} tappable>{subscription.name}</ListItem> )} />
+									renderRow={(subscription) => ( <ListItem className={this.props.application.dest._id == subscription._id ? "active" : ""} key={subscription._id} onClick={() => {this.props.toogleDest(subscription); this.props.setSideMenuShown(false)}} tappable>{subscription.name}</ListItem> )} />
+							<Button onClick={toggleChannelJoinDialog.bind(this)} >Join/Create</Button>
 						</Page>
 					</SplitterSide>
 					<SplitterContent>

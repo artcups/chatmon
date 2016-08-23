@@ -50,7 +50,9 @@ export function authenticateGoogle(){
   }
 }
 export function authenticateSilentGoogle(redirect){
+
     return function(dispatch) {
+        debugger;
         if(window.plugins != undefined && window.plugins.googleplus != undefined){
             dispatch({type: types.user.INIT_LOGIN})
             window.plugins.googleplus.trySilentLogin(
@@ -63,9 +65,11 @@ export function authenticateSilentGoogle(redirect){
                     dispatch({type: types.server.AUTHENTICATE_USER, data: {token: res.idToken, email: res.email}})
                 },
                 function (msg) {
-                    dispatch(push(`/login?next=${redirectAfterLogin}`))
+                    dispatch(push(`/login?next=${redirect}`))
                 }
             );
+        }else{
+            dispatch(push(`/login?next=${redirect}`))
         }
 
   }
